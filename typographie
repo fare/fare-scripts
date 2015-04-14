@@ -1,0 +1,2 @@
+#!/bin/sh
+exec cl-launch -sp fare-scripts/typographie -r typographie "$@"
