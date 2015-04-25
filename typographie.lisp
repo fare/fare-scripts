@@ -55,5 +55,6 @@
         while r do
           (format o "~A~%" (ligne r))))
 
-(defun main ()
+(defun main (argv)
+  (assert (null argv))
   (typographie))

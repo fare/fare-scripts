@@ -1,4 +1,4 @@
-":" ; exec cl-launch -s optima.ppcre -s inferior-shell -E fare-scripts/toggle-touchpad:main "$0" "$@"
+":" ; exec cl-launch -sm fare-scripts/toggle-touchpad "$0" "$@"
 ;; -*- lisp -*-
 ;; Based on https://wiki.archlinux.org/index.php/Touchpad_Synaptics#Software_toggle
 ;; Use the UI preferences to add a keyboard shortcut that invokes this script.
@@ -24,8 +24,11 @@
     (match line
       ((ppcre "Device Enabled\\s+[():0-9]+\\s+([01])" x) (return (equal x "1"))))))
 
-(defun toggle-device (&optional (id (get-touchpad-id)) (state (not (device-enabled-p id))))
-  (run `(xinput ,(if state 'enable 'disable) ,id)))
+(defun toggle-device (&optional (id (get-touchpad-id)) (on :toggle))
+  (let ((state (ecase on
+                 ((:toggle) (not (device-enabled-p id)))
+                 ((nil t) on))))
+    (run `(xinput ,(if state 'enable 'disable) ,id))))
 
 (defun enable-device (&optional (id (get-touchpad-id)))
   (toggle-device id t))
@@ -33,8 +36,8 @@
 (defun disable-device (&optional (id (get-touchpad-id)))
   (toggle-device id nil))
 
-(defun main (argv)
+(defun main (argv) ;; TODO: use command-line-arguments, or CLON
   (cond
     ((null argv) (toggle-device))
     ((eql (first-char (first argv)) #\() (eval (first argv)))
-    (t (apply (find-symbol (string-upcase (first argv))) (rest argv)))))
+    (t (apply (ensure-function (first argv) :package :fare-scripts/toggle-touchpad) (rest argv)))))
