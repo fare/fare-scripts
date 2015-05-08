@@ -5,5 +5,6 @@
   :defsystem-depends-on ("asdf-package-system")
   :depends-on ("fare-scripts/typographie"
                "fare-scripts/rescript"
+               "fare-scripts/shell-aliases"
                "fare-scripts/toggle-touchpad"
                "fare-scripts/unmime"))
