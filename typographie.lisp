@@ -24,7 +24,7 @@
    `(:sequence
      (:greedy-repetition 0 nil ,*any-space*)
      (:regex "([:»])")
-     (:negative-lookahead "/")
+     (:negative-lookahead "[/,.:;!?]")
      (:greedy-repetition 0 nil ,*any-space*))))
 (defparameter *post-espace*
   (create-scanner
