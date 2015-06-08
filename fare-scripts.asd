@@ -5,7 +5,7 @@
   :description "Various small programs that I write in CL in lieu of shell scripts"
   :license "MIT" ;; also BSD or bugroff
   :author "Francois-Rene Rideau"
-  :class :package-system
+  :class :package-inferred-system
   :depends-on ("fare-scripts/typographie"
                "fare-scripts/rescript"
                "fare-scripts/shell-aliases"
