@@ -1,8 +1,10 @@
 ;; Slowly migrating my zsh aliases here...
 
 (uiop:define-package :fare-scripts/shell-aliases
-  (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre :cl-launch/dispatch
-   :asdf-tools) ;; for its run-command, success, failure
+  (:use :cl :fare-utils :uiop
+   :inferior-shell :cl-scripting/failure
+   :optima :optima.ppcre
+   :cl-launch/dispatch)
   #+sbcl (:import-from :sb-posix))
 
 (in-package :fare-scripts/shell-aliases)

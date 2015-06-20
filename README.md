@@ -6,7 +6,7 @@ These scripts are published as examples of how to write scripts in Common Lisp,
 but without the ambition of turning them into widely used programs as such.
 
 Any general purpose utilities will be moved from out of this repository
-into a repository of their own.
+into the [cl-scripting](http://github.com/fare/cl-scripting) project.
 
 Contents:
 
@@ -21,7 +21,7 @@ Contents:
   shell aliases and are not better written in Lisp.
 
 * [typographie.lisp](typographie.lisp): a filter so my html file abides by French
-  typographic standards (NB: assumes UTF-8).
+  typographic standards, using cl-ppcre for regexp replacement (NB: assumes UTF-8).
 
 * [rescript.lisp](rescript.lisp): various silly script filters.
 
