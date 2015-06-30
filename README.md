@@ -17,13 +17,25 @@ Contents:
   that contains all the CL scripts I need in a single image, to combine
   fast startup with memory savings. See <http://fare.livejournal.com/184127.html>
 
+* [bazel.lisp](bazel.lisp): trivial functions to work with [bazel](http://bazel.io)
+
+* [commands.lisp](commands.lisp): functions to manage commands in my PATH.
+
+* [obsolete-shell-aliases.lisp](obsolete-shell-aliases.lisp): functions I don't use any more,
+  kept around for archival purposes after conversion from shell to Lisp.
+
+* [random.lisp](random.lisp): functions to randomly generate various passphrases, etc.
+
+* [rescript.lisp](rescript.lisp): various silly script filters.
+
 * [shell-aliases.lisp](shell-aliases.lisp): various functions that used to be
   shell aliases and are not better written in Lisp.
 
+* [toggle-touchpad.lisp](toggle-touchpad.lisp): a utility to toggle the touchpad on a laptop
+  using X-Window.
+
 * [typographie.lisp](typographie.lisp): a filter so my html file abides by French
   typographic standards, using cl-ppcre for regexp replacement (NB: assumes UTF-8).
-
-* [rescript.lisp](rescript.lisp): various silly script filters.
 
 * [unmime.lisp](unmime.lisp): filter that's semi-useful when processing
   mime files as e.g. decrypted from PGP encrypted mail.
