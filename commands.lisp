@@ -2,7 +2,7 @@
 
 (uiop:define-package :fare-scripts/commands
   (:use :cl :uiop :fare-utils
-        :inferior-shell :cl-scripting/failure :cl-scripting/commands :cl-launch/dispatch)
+        :inferior-shell :cl-scripting :cl-launch/dispatch)
   (:export #:fare-dir #:src-root #:common-lisp-src
            #:getuid #:stow-root #:restow #:fare-scripts-symlinks))
 

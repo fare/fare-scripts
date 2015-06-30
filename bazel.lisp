@@ -1,8 +1,7 @@
 ;; Shell aliases for working with bazel...
 
 (uiop:define-package :fare-scripts/bazel
-  (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre
-        :cl-scripting/commands :cl-scripting/failure))
+  (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre :cl-scripting))
 
 (in-package :fare-scripts/bazel)
 

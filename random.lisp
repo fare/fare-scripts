@@ -1,5 +1,5 @@
 (uiop:define-package :fare-scripts/random
-  (:use :cl :uiop :fare-utils :optima :optima.ppcre :binascii :cl-scripting/commands)
+  (:use :cl :uiop :fare-utils :optima :optima.ppcre :binascii :cl-scripting)
   (:export
    ;; #:randomize #:random-bytes #:urandom
    ;; #:*diceware* #:*diceware-words*

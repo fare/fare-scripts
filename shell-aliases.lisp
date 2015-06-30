@@ -2,7 +2,7 @@
 
 (uiop:define-package :fare-scripts/shell-aliases
   (:use :cl :fare-utils :uiop
-   :inferior-shell :cl-scripting/failure :cl-scripting/commands :fare-scripts/commands
+   :inferior-shell :cl-scripting :fare-scripts/commands
    :optima :optima.ppcre
    :cl-launch/dispatch)
   #+sbcl (:import-from :sb-posix))
