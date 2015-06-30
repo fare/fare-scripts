@@ -2,12 +2,32 @@
 
 (uiop:define-package :fare-scripts/commands
   (:use :cl :uiop :fare-utils
-        :inferior-shell :cl-scripting/failure :cl-launch/dispatch)
-  (:export #:fare-scripts-symlinks #:register-command #:register-commands))
+        :inferior-shell :cl-scripting/failure :cl-scripting/commands :cl-launch/dispatch)
+  (:export #:fare-dir #:src-root #:common-lisp-src
+           #:getuid #:stow-root #:restow #:fare-scripts-symlinks))
 
 (in-package :fare-scripts/commands)
 
 (exporting-definitions
+
+(defun fare-dir () (getenv-absolute-directory "FARE"))
+(defun src-root () (subpathname (fare-dir) "src/"))
+(defun common-lisp-src () (subpathname (src-root) "common-lisp/"))
+
+(defun getuid ()
+  #+sbcl (sb-posix:getuid)
+  #-sbcl (error "no getuid")) ;; use iolib?
+
+(defun stow-root ()
+  (if (zerop (getuid))
+      #p"/usr/local/stow/"
+      (subpathname (fare-dir) "local/stow/")))
+
+(defun restow ()
+  (with-current-directory ((stow-root))
+    (run `(stow "-R" ,@(mapcar (lambda (x) (car (last (pathname-directory x)))) (subdirectories "."))))
+    (run '(symlinks -rd "..")))
+  (success))
 
 (defun fare-scripts-symlinks ()
   (let ((binarch (resolve-absolute-location `(,(getenv "BINDIR") ,(getenv "BINARCH")) :ensure-directory t)))
@@ -18,19 +38,7 @@
           (run `(ln -s multi ,i))))))
   (success))
 
-(defun register-command (command)
-  (check-type command symbol)
-  (when (fboundp command)
-    (cl-launch/dispatch:register-entry
-     (string-downcase command)
-     #'(lambda (argv) (apply 'run-command command argv)))))
-
-(defun register-commands (commands)
-  (etypecase commands
-    (list (map () 'register-command commands))
-    ((or string symbol package) (do-external-symbols (command commands) (register-command command)))))
-
 );exporting-definitions
 
 ;; Not all our exported symbols are worth exposing to the shell command-line.
-(register-commands '(fare-scripts-symlinks))
+(register-commands :fare-scripts/commands)

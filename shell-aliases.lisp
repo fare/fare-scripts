@@ -2,7 +2,7 @@
 
 (uiop:define-package :fare-scripts/shell-aliases
   (:use :cl :fare-utils :uiop
-   :inferior-shell :cl-scripting/failure :fare-scripts/commands
+   :inferior-shell :cl-scripting/failure :cl-scripting/commands :fare-scripts/commands
    :optima :optima.ppcre
    :cl-launch/dispatch)
   #+sbcl (:import-from :sb-posix))
@@ -18,24 +18,6 @@
 
 (defun mkba2 ()
   (mkba) (mkba))
-
-(defun getuid ()
-  #+sbcl (sb-posix:getuid)
-  #-sbcl (error "no getuid")) ;; use iolib?
-
-(defun stow-root ()
-  (if (zerop (getuid))
-      #p"/usr/local/stow/"
-      (subpathname (fare-dir) "local/stow/")))
-(defun restow ()
-  (with-current-directory ((stow-root))
-    (run `(stow "-R" ,@(mapcar (lambda (x) (car (last (pathname-directory x)))) (subdirectories "."))))
-    (run '(symlinks -rd "..")))
-  (success))
-
-(defun fare-dir () (getenv-absolute-directory "FARE"))
-(defun src-root () (subpathname (fare-dir) "src/"))
-(defun common-lisp-src () (subpathname (src-root) "common-lisp/"))
 
 (defun mygcl ()
   ;; git clone git://git.sv.gnu.org/gcl.git
