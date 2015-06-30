@@ -1,7 +1,7 @@
 ;; Shell aliases for working with bazel...
 
 (uiop:define-package :fare-scripts/bazel
-  (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre :cl-launch/dispatch
+  (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre :cl-launch/dispatch :fare-scripts/commands
    :cl-scripting/failure)
   #+sbcl (:import-from :sb-posix))
 
@@ -26,7 +26,4 @@
 
 );exporting-definitions
 
-(do-external-symbols (cmd :fare-scripts/bazel)
-  (when (fboundp cmd)
-    (cl-launch/dispatch:register-entry (string-downcase cmd)
-       (lambda (argv) (apply 'run-command cmd argv)))))
+(register-commands :fare-scripts/bazel)

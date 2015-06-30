@@ -2,7 +2,7 @@
 
 (uiop:define-package :fare-scripts/shell-aliases
   (:use :cl :fare-utils :uiop
-   :inferior-shell :cl-scripting/failure
+   :inferior-shell :cl-scripting/failure :fare-scripts/commands
    :optima :optima.ppcre
    :cl-launch/dispatch)
   #+sbcl (:import-from :sb-posix))
@@ -18,15 +18,6 @@
 
 (defun mkba2 ()
   (mkba) (mkba))
-
-(defun fare-scripts-symlinks ()
-  (let ((binarch (resolve-absolute-location `(,(getenv "BINDIR") ,(getenv "BINARCH")) :ensure-directory t)))
-    (with-current-directory (binarch)
-      (dolist (i (cl-launch/dispatch:all-entry-names))
-        (unless (file-exists-p i)
-          (format t "linking file ~A~%" i)
-          (run `(ln -s multi ,i))))))
-  (success))
 
 (defun getuid ()
   #+sbcl (sb-posix:getuid)
@@ -92,9 +83,20 @@
 (defun rot13 ()
   (run/interactive '(tr "[a-zA-Z]" "[n-za-mN-ZA-M]"))
   (success))
+
+(defun xrsync (args)
+  (run `(rsync "-rlptgoDHSx" ,@args)))
+
+(defun snd-jack ()
+  (run `(pulseaudio --kill))
+  (run `(jack_control start)))
+
+(defun snd-pulse ()
+  (run `(jack_control exit))
+  (run `(pulseaudio --start)))
+
+(defun snd-nojack ()
+  (run `(killall jackd)))
 );exporting-definitions
 
-(do-external-symbols (cmd :fare-scripts/shell-aliases)
-  (when (fboundp cmd)
-    (cl-launch/dispatch:register-entry (string-downcase cmd)
-       (lambda (argv) (apply 'run-command cmd argv)))))
+(register-commands :fare-scripts/shell-aliases)
