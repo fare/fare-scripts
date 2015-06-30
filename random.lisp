@@ -12,7 +12,9 @@
 
 (defun randomize ()
   (setf *random-state* (make-random-state t)))
-(randomize)
+
+(register-image-restore-hook 'randomize)
+
 
 #|(defun ensure-prng ()
   (unless crypto:*prng* (setf crypto:*prng* (crypto:make-prng :fortuna))))|#
