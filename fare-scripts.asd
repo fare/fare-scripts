@@ -6,8 +6,9 @@
   :license "MIT" ;; also BSD or bugroff
   :author "Francois-Rene Rideau"
   :class :package-inferred-system
-  :depends-on ("fare-scripts/typographie"
+  :depends-on ("fare-scripts/random"
                "fare-scripts/rescript"
                "fare-scripts/shell-aliases"
                "fare-scripts/toggle-touchpad"
+               "fare-scripts/typographie"
                "fare-scripts/unmime"))

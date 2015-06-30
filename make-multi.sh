@@ -4,15 +4,16 @@ A=(
   --output $BINDIR/$BINARCH/multi --dump !
   --lisp sbcl
   --quicklisp
-  --dispatch-system exscribe --system exscribe/typeset
+  --dispatch-system exscribe --system exscribe/typeset # add-on to exscribe
   --dispatch-system fare-scripts/typographie
   --dispatch-system fare-scripts/toggle-touchpad
   --dispatch-system fare-scripts/unmime
-  --system fare-scripts/shell-aliases # registers its functions!
-  --system fare-scripts/bazel # registers its functions!
-  --system-package lisp-stripper --dispatch-entry lispwc
   --dispatch-system tthsum
   --dispatch-system workout-timer
+  --system fare-scripts/bazel # The following three register their own functions!
+  --system fare-scripts/random
+  --system fare-scripts/shell-aliases
+  --system-package lisp-stripper --dispatch-entry lispwc
 )
 $A $@
 multi fare-scripts-symlinks
