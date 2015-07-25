@@ -4,29 +4,11 @@
   (:use :cl :fare-utils :uiop
    :inferior-shell :cl-scripting :fare-scripts/commands
    :optima :optima.ppcre
-   :cl-launch/dispatch)
-  #+sbcl (:import-from :sb-posix))
+   :cl-launch/dispatch))
 
 (in-package :fare-scripts/shell-aliases)
 
 (exporting-definitions
-
-(defun mkba ()
-  (with-current-directory ((subpathname (user-homedir-pathname) "src/fare/bastiat.org/"))
-    (run '(make dep)) (run '(make)))
-  (success))
-
-(defun mkba2 ()
-  (mkba) (mkba))
-
-(defun mygcl ()
-  ;; git clone git://git.sv.gnu.org/gcl.git
-  (with-current-directory ((subpathname (common-lisp-src) "gcl/gcl/"))
-    (run `(git clean -xfd))
-    (run `(./configure --enable-ansi (--prefix=,(stow-root)gcl))) ;; --disable-dynsysgmp --enable-static ???
-    (run `(make -l6 install (prefix=,(stow-root)gcl)))
-    (delete-file (subpathname (stow-root) "gcl/share/info/dir"))
-    (success)))
 
 (defun char-display-char (c)
   (if (or (member c '(127 155))
@@ -70,15 +52,16 @@
   (run `(rsync "-rlptgoDHSx" ,@args)))
 
 (defun snd-jack ()
-  (run `(pulseaudio --kill))
-  (run `(jack_control start)))
+  (run/interactive `(pasuspender -- jack_control start)))
+
+(defun snd-jackd () ;; another way to start...
+  (run/interactive `(jackd "-R" "-P4" -dalsa -r44100 -p512 -n4 "-D" "-Chw:PCH" "-Phw:PCH")))
 
 (defun snd-pulse ()
-  (run `(jack_control exit))
-  (run `(pulseaudio --start)))
+  (run/interactive `(jack_control exit) :on-error nil))
 
 (defun snd-nojack ()
-  (run `(killall jackd)))
+  (run `(killall jackd) :on-error nil))
 );exporting-definitions
 
 (register-commands :fare-scripts/shell-aliases)

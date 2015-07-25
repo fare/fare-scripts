@@ -1,7 +1,7 @@
 ":" ; exec cl-launch -Q -sm fare-scripts/unmime -- "$@"
 
-(defpackage :fare-scripts/unmime
-  (:use :cl :cl-mime :uiop :optima :optima.ppcre :babel))
+(uiop:define-package :fare-scripts/unmime
+  (:mix :cl :cl-mime :uiop :optima :optima.ppcre :babel))
 
 (in-package :fare-scripts/unmime)
 

@@ -10,9 +10,7 @@ A=(
   --dispatch-system fare-scripts/unmime
   --dispatch-system tthsum
   --dispatch-system workout-timer
-  --system fare-scripts/bazel # The following three register their own functions!
-  --system fare-scripts/random
-  --system fare-scripts/shell-aliases
+  --system fare-scripts # Many of its subsystems register their own functions!
   --system-package lisp-stripper --dispatch-entry lispwc
 )
 $A $@

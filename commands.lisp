@@ -13,6 +13,7 @@
 (defun fare-dir () (getenv-absolute-directory "FARE"))
 (defun src-root () (subpathname (fare-dir) "src/"))
 (defun common-lisp-src () (subpathname (src-root) "common-lisp/"))
+(defun cl-root () (subpathname (fare-dir) "cl/"))
 
 (defun getuid ()
   #+sbcl (sb-posix:getuid)
