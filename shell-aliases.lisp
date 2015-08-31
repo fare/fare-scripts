@@ -49,7 +49,7 @@
   (success))
 
 (defun xrsync (args)
-  (run `(rsync "-rlptgoDHSx" ,@args)))
+  (run/i `(rsync "-rlptgoDHSx" ,@args)))
 
 (defun snd-jack ()
   (run/i `(pasuspender -- jack_control start)))
@@ -61,7 +61,7 @@
   (run/i `(jack_control exit) :on-error nil))
 
 (defun snd-nojack ()
-  (run `(killall jackd) :on-error nil))
+  (run/i `(killall jackd) :on-error nil))
 );exporting-definitions
 
 (register-commands :fare-scripts/shell-aliases)
