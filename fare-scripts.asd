@@ -7,6 +7,7 @@
   :author "Francois-Rene Rideau"
   :class :package-inferred-system
   :depends-on ((:version "cl-scripting" "0.1")
+               (:version "inferior-shell" "2.0.3.3")
                "fare-scripts/languages"
                "fare-scripts/random"
                "fare-scripts/rescript"

@@ -45,20 +45,20 @@
   (success))
 
 (defun rot13 ()
-  (run/interactive '(tr "[a-zA-Z]" "[n-za-mN-ZA-M]"))
+  (run/i '(tr "[a-zA-Z]" "[n-za-mN-ZA-M]"))
   (success))
 
 (defun xrsync (args)
   (run `(rsync "-rlptgoDHSx" ,@args)))
 
 (defun snd-jack ()
-  (run/interactive `(pasuspender -- jack_control start)))
+  (run/i `(pasuspender -- jack_control start)))
 
 (defun snd-jackd () ;; another way to start...
-  (run/interactive `(jackd "-R" "-P4" -dalsa -r44100 -p512 -n4 "-D" "-Chw:PCH" "-Phw:PCH")))
+  (run/i `(jackd "-R" "-P4" -dalsa -r44100 -p512 -n4 "-D" "-Chw:PCH" "-Phw:PCH")))
 
 (defun snd-pulse ()
-  (run/interactive `(jack_control exit) :on-error nil))
+  (run/i `(jack_control exit) :on-error nil))
 
 (defun snd-nojack ()
   (run `(killall jackd) :on-error nil))

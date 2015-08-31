@@ -12,14 +12,14 @@
 
 (defun bazel (&rest args)
   (with-current-directory (*bazel-dir*)
-    (run/interactive `(,*bazel* ,@args)))
+    (run/i `(,*bazel* ,@args)))
   (success))
 
 (defun ss (&optional nobuild)
   (with-current-directory (*bazel-dir*)
     (unless nobuild
       (bazel 'build "src/test/java:skylarkshell"))
-    (run/interactive '("bazel-bin/src/test/java/skylarkshell")))
+    (run/i '("bazel-bin/src/test/java/skylarkshell")))
   (success))
 
 );exporting-definitions
