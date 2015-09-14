@@ -67,6 +67,13 @@
     (run/i `(make -l6))
     (run/i `(make install))))
 
+(defun mymkcl ()
+  (with-current-directory ((subpathname (common-lisp-src) "mkcl/"))
+    (run/i `(git clean -xfd))
+    (run/i `(./configure (--prefix=,(stow-root)mkcl)))
+    (run/i `(make -l6))
+    (run/i `(make install))))
+
 (defun mygcl ()
   ;; git clone git://git.sv.gnu.org/gcl.git
   (with-current-directory ((subpathname (common-lisp-src) "gcl/gcl/"))
@@ -108,6 +115,13 @@
       (run/i `(pipe (sh "./configure" (--prefix=,install-root)) (tee ,out)))
       ;;(delete-directory-tree (subpathname install-root "lib/rust/") :validate #'(lambda (p) (subpathp p install-root)))
       (run/i `(pipe (make install) (tee -a ,out)))))
+  (success))
+
+(defun myplt ()
+  (with-current-directory ((subpathname (src-root) "racket/plt/"))
+    (run/i `(git clean -xfd))
+    (run/i `(pipe (make -l6 unix-style ("PREFIX"=,(stow-root)plt) (>& 2 1))
+                  (tee /tmp/plt.out))))
   (success))
 
 (defun frob ()
