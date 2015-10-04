@@ -10,6 +10,13 @@
 
 (exporting-definitions
 
+(progn
+  (defun nns (x)
+    (let ((s (native-namestring x)))
+      (if (and (equal (last-char s) #\/) (not (equal s "/")))
+          (subseq s 0 (1- (length s)))
+          s))))
+
 (defun mkba ()
   (with-current-directory ((subpathname (src-root) "fare/bastiat.org/"))
     (run '(make dep)) (run '(make)))
@@ -87,12 +94,12 @@
   (with-current-directory ((subpathname (common-lisp-src) "sbcl/"))
     (let ((install-root (subpathname (stow-root) "sbcl/"))
           (out (subpathname (temporary-directory) "mysbcl.out")))
-      (run/i `(pipe ("sh" "./make.sh" ("--prefix=",install-root)
+      (run/i `(pipe ("sh" "./make.sh" ("--prefix=",(nns install-root))
                                     "--xc-host=/usr/bin/sbcl --disable-debugger --no-userinit --no-sysinit"
-                                    "--fancy") (tee ,out)))
+                                    "--fancy" "--with-sb-dynamic-core") (tee ,out)))
       (ignore-errors
        (delete-directory-tree (subpathname install-root "lib/sbcl/") :validate #'(lambda (p) (subpathp p install-root))))
-      (run/i `(pipe (sh "./install.sh" (--prefix=,install-root)) (tee -a ,out)))))
+      (run/i `(pipe (sh "./install.sh" (--prefix=,(nns install-root))) (tee -a ,out)))))
   (success))
 
 (defun mysbcl-contrib (&optional tag)
@@ -104,7 +111,8 @@
     (with-current-directory ((subpathname (common-lisp-src) "sbcl/contrib/asdf/"))
       (run/i `(pipe (make up "SBCL=../../run-sbcl.sh") (tee -a ,out))))
     (with-current-directory ((subpathname (common-lisp-src) "sbcl/"))
-      (run/i `(pipe (sh "./make-target-contrib.sh" (--prefix=,install-root) --with-sb-core-compression)) (tee -a out))
+      (run/i `(pipe (sh "./make-target-contrib.sh" (--prefix=,install-root) --with-sb-core-compression)
+                    (tee -a out)))
       (run/i `(pipe (sh "./install.sh" (--prefix=,install-root)) (tee -a out)))))
   (success))
 

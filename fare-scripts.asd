@@ -10,6 +10,7 @@
                (:version "inferior-shell" "2.0.3.3")
                "fare-scripts/languages"
                "fare-scripts/random"
+               "fare-scripts/repl"
                "fare-scripts/rescript"
                "fare-scripts/shell-aliases"
                "fare-scripts/toggle-touchpad"
