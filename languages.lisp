@@ -95,8 +95,8 @@
     (let ((install-root (subpathname (stow-root) "sbcl/"))
           (out (subpathname (temporary-directory) "mysbcl.out")))
       (run/i `(pipe ("sh" "./make.sh" ("--prefix=",(nns install-root))
-                                    "--xc-host=/usr/bin/sbcl --disable-debugger --no-userinit --no-sysinit"
-                                    "--fancy" "--with-sb-dynamic-core") (tee ,out)))
+                          "--xc-host=/usr/bin/sbcl --disable-debugger --no-userinit --no-sysinit"
+                          "--with-sb-dynamic-core" "--fancy" (>& 2 1)) (tee ,out)))
       (ignore-errors
        (delete-directory-tree (subpathname install-root "lib/sbcl/") :validate #'(lambda (p) (subpathp p install-root))))
       (run/i `(pipe (sh "./install.sh" (--prefix=,(nns install-root))) (tee -a ,out)))))

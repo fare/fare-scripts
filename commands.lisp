@@ -3,8 +3,9 @@
 (uiop:define-package :fare-scripts/commands
   (:use :cl :uiop :fare-utils
         :inferior-shell :cl-scripting :cl-launch/dispatch)
-  (:export #:fare-dir #:src-root #:common-lisp-src
-           #:getuid #:stow-root #:restow #:fare-scripts-symlinks))
+  (:export #:fare-dir #:src-root #:common-lisp-src #:cl-root
+           #:getuid #:stow-root #:restow
+           #:fare-scripts-symlinks #:help))
 
 (in-package :fare-scripts/commands)
 
@@ -37,6 +38,10 @@
         (unless (file-exists-p i)
           (format t "linking file ~A~%" i)
           (run `(ln -s multi ,i))))))
+  (success))
+
+(defun help ()
+  (format! t "~A available commands: ~{~A~^ ~}~%" (get-name) (all-entry-names))
   (success))
 
 );exporting-definitions
