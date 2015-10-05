@@ -1,6 +1,7 @@
 ;;; REPL utilities
 (uiop:define-package :fare-scripts/repl
-  (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre :cl-scripting))
+  (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre :cl-scripting)
+  (:import-from :swank))
 
 (in-package :fare-scripts/repl)
 

@@ -26,6 +26,8 @@ Contents:
 
 * [random.lisp](random.lisp): functions to randomly generate various passphrases, etc.
 
+* [repl.lisp](repl.lisp): various helpers for the Lisp REPL.
+
 * [rescript.lisp](rescript.lisp): various silly script filters.
 
 * [shell-aliases.lisp](shell-aliases.lisp): various functions that used to be
