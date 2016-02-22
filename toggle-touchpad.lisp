@@ -1,4 +1,4 @@
-":" ; exec cl-launch -sm fare-scripts/toggle-touchpad "$0" "$@"
+":" ; exec cl-launch -Q -sp fare-scripts/toggle-touchpad "$0" "$@"
 ;; -*- lisp -*-
 ;; Based on https://wiki.archlinux.org/index.php/Touchpad_Synaptics#Software_toggle
 ;; Use the UI preferences to add a keyboard shortcut that invokes this script.
