@@ -1,4 +1,4 @@
-":" ; exec cl-launch -Q -sm fare-scripts/unmime -- "$@"
+":" ; exec cl-launch -Q -sp fare-scripts/unmime -- "$@"
 
 (uiop:define-package :fare-scripts/unmime
   (:mix :cl :cl-mime :uiop :optima :optima.ppcre :babel))
