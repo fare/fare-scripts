@@ -4,7 +4,9 @@
   (:use :cl :fare-utils :uiop
    :inferior-shell :cl-scripting :fare-scripts/commands
    :optima :optima.ppcre
-   :cl-launch/dispatch))
+   :cl-launch/dispatch)
+  (:export
+   ))
 
 (in-package :fare-scripts/shell-aliases)
 
@@ -55,13 +57,23 @@
   (run/i `(pasuspender -- jack_control start)))
 
 (defun snd-jackd () ;; another way to start...
-  (run/i `(jackd "-R" "-P4" -dalsa -r44100 -p512 -n4 "-D" "-Chw:PCH" "-Phw:PCH")))
+  (run/i `(pasuspender -- jackd "-R" "-P4" -dalsa -r44100 -p512 -n4 "-D" "-Chw:PCH" "-Phw:PCH")))
 
 (defun snd-pulse ()
   (run/i `(jack_control exit) :on-error nil))
 
 (defun snd-nojack ()
   (run/i `(killall jackd) :on-error nil))
+
+(defun kill-chrome (&rest args)
+  (inferior-shell:run `(killall ,@args chromium google-chrome chrome)
+       :output :interactive :input :interactive :error-output nil :on-error nil))
+
+(defun stop-chrome ()
+  (kill-chrome "-STOP"))
+
+(defun continue-chrome ()
+  (kill-chrome "-CONT"))
 );exporting-definitions
 
 (register-commands :fare-scripts/shell-aliases)
