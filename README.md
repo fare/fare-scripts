@@ -1,7 +1,7 @@
 fare-scripts, random personal scripts
 =====================================
 
-*NOTE TO THOSE WANTING TO TRY THE SCRIPTS* Checkout this repository to a location where the ASDF of your favorite implementation can find the systems. You are probably using Quicklisp, so checkout to $HOME/quicklisp/local-projects/fare-scripts
+**NOTE TO THOSE WANTING TO TRY THE SCRIPTS** Checkout this repository to a location where the ASDF of your favorite implementation can find the systems. You are probably using Quicklisp, so checkout to $HOME/quicklisp/local-projects/fare-scripts
 
 fare-scripts is a collection of small scripts I use at home.
 These scripts are published as examples of how to write scripts in Common Lisp,
