@@ -43,7 +43,6 @@
 (defun help ()
   (format! t "~A available commands: ~{~A~^ ~}~%" (get-name) (all-entry-names))
   (success))
-
 );exporting-definitions
 
 ;; Not all our exported symbols are worth exposing to the shell command-line.

@@ -1,4 +1,4 @@
-":" ; exec cl-launch -sm fare-scripts/typographie -- "$@"
+":" ; exec cl-launch -Q -sm fare-scripts/typographie -- "$@"
 
 (defpackage :fare-scripts/typographie
   (:use :common-lisp :uiop :cl-ppcre)

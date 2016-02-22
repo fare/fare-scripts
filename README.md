@@ -8,9 +8,14 @@ but without the ambition of turning them into widely used programs as such.
 Any general purpose utilities will be moved from out of this repository
 into the [cl-scripting](http://github.com/fare/cl-scripting) project.
 
+NB: If you want to try these scripts, be sure to install this directory
+where ASDF 3.1 will find it, e.g. under `~/common-lisp/` or,
+if you use [Quicklisp](https://www.quicklisp.org/beta/), under `~/quicklisp/local-projects/`.
+Be sure to install all the dependencies, and/or to use Quicklisp.
+
 Contents:
 
-* [fare-scripts.asd](fare-scripts.asd): the .asd file,
+* [fare-scripts.asd](fare-scripts.asd): the `.asd` file,
   which trivially uses package-inferred-system.
 
 * [make-multi.sh](make-multi.sh): a shell script to create a multicall binary
