@@ -20,23 +20,22 @@
   (unless crypto:*prng* (setf crypto:*prng* (crypto:make-prng :fortuna))))|#
 
 (defun random-bytes (n)
-  (let ((x (make-array
-            (list n)
-            :element-type '(unsigned-byte 8) :initial-element 0)))
-    (with-open-file (s "/dev/urandom"
-                       :direction :input :element-type '(unsigned-byte 8))
+  (let ((x (make-array (list n) :element-type '(unsigned-byte 8) :initial-element 0)))
+    (with-input-file (s "/dev/urandom" :element-type '(unsigned-byte 8))
       (read-sequence x s))
     x))
 
 (defun urandom (n)
-  ;; in case you don't trust your implementation's RANDOM, you can use URANDOM.
-  (let* ((n-bytes (ceiling (+ 64 (log n 2)) 8)) ;; get 64 extra bits everytime, minimizing the mismatch between n and 2**m
+  ;; If you don't trust your implementation's CL:RANDOM, you can use FARE-SCRIPTS/RANDOM:URANDOM.
+  ;; Get 64 extra bits everytime, minimizing the mismatch between n and 2**m
+  (let* ((n-bytes (ceiling (+ 64 (log n 2)) 8))
          (bytes (random-bytes n-bytes))
          (big-n (reduce (lambda (x y) (mod (+ (ash x 8) y) n)) bytes)))
     (mod big-n n)))
 
 (defparameter *diceware*
-  '(:file #p"/home/tunes/src/security/diceware-fr/diceware-fr-5-jets.txt" :n-dice 5))
+  `(:file ,(subpathname (user-homedir-pathname) "src/security/diceware-fr/diceware-fr-5-jets.txt")
+    :n-dice 5))
 
 (defvar *diceware-words* ())
 

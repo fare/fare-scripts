@@ -66,8 +66,9 @@
   (run/i `(killall jackd) :on-error nil))
 
 (defun kill-chrome (&rest args)
-  (inferior-shell:run `(killall ,@args chromium google-chrome chrome)
-       :output :interactive :input :interactive :error-output nil :on-error nil))
+  (inferior-shell:run
+   `(killall ,@args chromium-browser chromium google-chrome chrome)
+   :output :interactive :input :interactive :error-output nil :on-error nil))
 
 (defun stop-chrome ()
   (kill-chrome "-STOP"))
