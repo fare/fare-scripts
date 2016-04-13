@@ -75,6 +75,12 @@
 
 (defun continue-chrome ()
   (kill-chrome "-CONT"))
+
+(defun kde-panel ()
+  (run/i `(kquitapp plasmashell))
+  (run `(setsid plasmashell
+		(> ,(subpathname (temporary-directory) "plasmashell.out")) (>& 2 1))))
+
 );exporting-definitions
 
 (register-commands :fare-scripts/shell-aliases)

@@ -27,7 +27,7 @@
 
 (defun myclisp ()
   (with-current-directory ((subpathname (common-lisp-src) "clisp/"))
-    (run/i `(hg clean))
+    (run/i `(hg clean)) ;; requires "[extensions]\npurge = " in ~/.hgrc
     (ignore-errors
      (delete-directory-tree (subpathname (common-lisp-src) "clisp/build-dir/")))
     (run/i `(./configure
