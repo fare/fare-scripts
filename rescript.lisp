@@ -1,6 +1,6 @@
 (defpackage :fare-scripts/rescript
   (:use :common-lisp :uiop)
-  (:export #:superscriptize #:upsidedown #:leftright))
+  (:export #:superscriptize #:subscriptize #:upsidedown #:leftright))
 
 (in-package :fare-scripts/rescript)
 
@@ -32,6 +32,10 @@
   " 0123456789+-=()abcdefghijklmnoprstuvwxyzABDEGHIJKLMNOPRTUVWαβγδεθιΦφχ"
   " ⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖʳˢᵗᵘᵛʷˣʸᶻᴬᴮᴰᴱᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᴿᵀᵁⱽᵂᵅᵝᵞᵟᵋᶿᶥᶲᵠᵡ")
 
+(define-script-translation subscriptize
+  " 0123456789+-=()aehijklmnoprstuvxβγρφχəا"
+  " ₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜᵤᵥₓᵦᵧᵨᵩᵪₔٖ")
+
 (define-script-translation upsidedown
   " zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA0987654321&_?!\"'.,;"
   " zʎxʍʌnʇsɹbdouɯlʞɾıɥɓɟǝpɔqɐZ⅄XMΛ∩⊥SᴚԾԀONW⅂⋊ſIH⅁ℲƎᗡƆ𐐒∀068ㄥ9ގㄣƐᄅ⇂⅋‾¿¡„,˙'؛"
@@ -42,3 +46,10 @@
   " 018!\"'.:-_+=|)(][}{><\\/`´ᗅᗺƆᗡƎꟻᎮHIႱ⋊⅃MͶOꟼỌЯꙄTUVWXYƸɒdɔbɘᎸǫʜiꞁʞ|mᴎoqpɿꙅƚuvwxʏƹ"
   :reversible t :nest (reverse))
 
+(defun search-char-name (subname)
+  (loop
+    :for i :from 0 :below char-code-limit
+    :for c = (ignore-errors (code-char i))
+    :for n = (and c (char-name c))
+    :when (and n (search subname n))
+    :do (format t "~D ~C ~A~%" i c n)))
