@@ -4,7 +4,11 @@
   (:use :cl :fare-utils :uiop
    :inferior-shell :cl-scripting :fare-scripts/commands
    :optima :optima.ppcre
-   :cl-launch/dispatch))
+   :cl-launch/dispatch)
+  (:export
+   #:frob #:frop #:mkba #:mkba2
+   #:myccl #:mychez #:myclisp #:myecl #:mygcl #:myhott #:mymkcl #:myplt
+   #:myrust #:mysbcl #:mysbcl-contrib #:upccl))
 
 (in-package :fare-scripts/languages)
 
@@ -131,6 +135,24 @@
     (run/i `(pipe (make -l6 unix-style ("PREFIX"=,(stow-root)plt) (>& 2 1))
                   (tee /tmp/plt.out))))
   (success))
+
+(defun mychez ()
+  (with-current-directory ((subpathname (src-root) "scheme/ChezScheme/"))
+    (run/i `(git clean -xfd))
+    (run/i `("./configure"
+	     "--threads"
+	     ("--installprefix=",(stow-root)"ChezScheme")
+	     ("--installman=",(stow-root)"share/man")))
+    (run/i `(pipe ("make" "-l6" "-C" "ta6le" "install" (>& 2 1))
+                  (tee /tmp/chez.out))))
+  (success))
+
+(defun myhott ()
+  (with-current-directory ((subpathname (src-root) "coq/HoTT/"))
+    (run/i `(etc/install_coq.sh))
+    (run/i `(./autogen.sh))
+    (run/i `(./configure ("COQBIN=",(getcwd)"/coq-HoTT/bin")))
+    (run/i `(make))))
 
 (defun frob ()
   (with-current-directory ((subpathname (src-root) "fare/ngnghm/"))
