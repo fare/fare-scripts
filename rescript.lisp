@@ -1,6 +1,9 @@
+;;; -*- mode: Lisp; coding: utf-8 -*-
+;; ᴸᴀᵀᴇᵡ
+
 (defpackage :fare-scripts/rescript
   (:use :common-lisp :uiop)
-  (:export #:superscriptize #:subscriptize #:upsidedown #:leftright))
+  (:export #:superscriptize #:subscriptize #:upsidedown #:leftright #:mathbb #:smallcaps))
 
 (in-package :fare-scripts/rescript)
 
@@ -48,9 +51,11 @@
 
 (define-script-translation mathbb
   " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-  " 𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡
-")
+  " 𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡")
 
+(define-script-translation smallcaps
+  " ABCDEFGHIJKLMNOPRSTUVWYZ"
+  " ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘʀsᴛᴜᴠᴡʏᴢ")
 
 (defun search-char-name (subname)
   (loop
