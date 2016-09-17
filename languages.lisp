@@ -29,11 +29,14 @@
 (defun mkba2 ()
   (mkba) (mkba))
 
-(defun myclisp ()
+(defun myclisp (&optional debug)
   (with-current-directory ((subpathname (common-lisp-src) "clisp/"))
     (run/i `(hg clean)) ;; requires "[extensions]\npurge = " in ~/.hgrc
     (ignore-errors
-     (delete-directory-tree (subpathname (common-lisp-src) "clisp/build-dir/")))
+      (delete-directory-tree
+       (subpathname (common-lisp-src) "clisp/build-dir/")
+       :validate (lambda (p)
+		   (equal "build-dir" (car (last (pathname-directory p)))))))
     (run/i `(./configure
              --with-ffcall
              (--with-libffcall-prefix=,(common-lisp-src)clisp/tools/x86_64-unknown-linux-gnu)
@@ -63,8 +66,12 @@
              ;;--with-module=pcre
              ;;--with-module=postgresql
              ;;--with-module=queens
-             --cbc build-dir
-             (--prefix=,(stow-root)clisp)))
+             (--prefix=,(stow-root)clisp)
+	     --cbc
+	     ;; The below line is for debugging the GC. See CLISP bug 678
+	     ;;   https://sourceforge.net/p/clisp/bugs/678/
+	     ,@(when debug '(--with-debug "CC=g++"))
+             build-dir))
     ;;(run/i `(make "-C" build-dir distclean)
     (run/i `(make "-C" build-dir))
     (run/i `(make "-C" build-dir check))
