@@ -8,7 +8,7 @@
 ;; Or use make-multi.sh to create a multi-call binary that includes toggle-touchpad support.
 
 (uiop:define-package :fare-scripts/toggle-touchpad
-  (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre)
+  (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre :cl-scripting/commands)
   (:export #:help #:get-touchpad-id #:device-enabled-p
            #:toggle-device #:disable-device #:enable-device))
 
@@ -47,7 +47,7 @@
     ((eql (first-char (first argv)) #\() (eval (first argv)))
     (t (if-let (fun (package-function :fare-scripts/toggle-touchpad
                                       (standard-case-symbol-name (first argv))))
-         (apply fun (rest argv))
+         (apply 'run-command fun (rest argv))
          (progn
            (format *error-output* "Bad toggle-touchpad command: ~A~%" (first argv))
            (help *error-output*)
