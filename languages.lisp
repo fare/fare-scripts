@@ -101,24 +101,25 @@
     (delete-file (subpathname (stow-root) "gcl/share/info/dir"))
     (success)))
 
-(defun mysbcl ()
+(defun mysbcl (&optional (install-root (subpathname (stow-root) "sbcl/")))
   (with-current-directory ((subpathname (common-lisp-src) "sbcl/"))
-    (let ((install-root (subpathname (stow-root) "sbcl/"))
-          (out (subpathname (temporary-directory) "mysbcl.out")))
+    (let ((out (subpathname (temporary-directory) "mysbcl.out")))
       (run/i `(pipe ("sh" "./make.sh" ("--prefix=",(nns install-root))
-                          "--xc-host=/usr/bin/sbcl --disable-debugger --no-userinit --no-sysinit"
-                          "--with-sb-dynamic-core" "--fancy" (>& 2 1)) (tee ,out)))
+                          ;; "--xc-host=/usr/bin/sbcl --disable-debugger --no-userinit --no-sysinit"
+                          "--with-sb-threads" "--with-sb-linkable-runtime" "--with-sb-dynamic-core"
+                          "--fancy" (>& 2 1))
+                    (tee ,out)))
       (ignore-errors
-       (delete-directory-tree (subpathname install-root "lib/sbcl/") :validate #'(lambda (p) (subpathp p install-root))))
-      (run/i `(pipe (sh "./install.sh" (--prefix=,(nns install-root))) (tee -a ,out)))))
+        (delete-directory-tree (subpathname install-root "lib/sbcl/")
+                               :validate #'(lambda (p) (subpathp p install-root))))
+      (run/i `(pipe (sh "./install.sh" (--prefix=,(nns install-root)))
+                    (tee -a ,out)))))
   (success))
 
-(defun mysbcl-contrib (&optional tag)
-  (let ((install-root (subpathname (stow-root) "sbcl/"))
-        (out (subpathname (temporary-directory) "mysbcl-contrib.out")))
+(defun mysbcl-contrib (&optional (install-root (subpathname (stow-root) "sbcl/")))
+  (let ((out (subpathname (temporary-directory) "mysbcl-contrib.out")))
     (with-current-directory ((subpathname (common-lisp-src) "sbcl/obj/asdf-upstream/"))
-      (run/i `(pipe (git reset --hard ,tag) (tee ,out)))
-      (run/i `(pipe (git pull (subpathname (cl-root) "asdf/")) (tee -a ,out))))
+      (run/i `(pipe (git pull (subpathname (cl-root) "asdf/")) (tee ,out))))
     (with-current-directory ((subpathname (common-lisp-src) "sbcl/contrib/asdf/"))
       (run/i `(pipe (make up "SBCL=../../run-sbcl.sh") (tee -a ,out))))
     (with-current-directory ((subpathname (common-lisp-src) "sbcl/"))

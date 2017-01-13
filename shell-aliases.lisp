@@ -6,7 +6,24 @@
    :optima :optima.ppcre
    :cl-launch/dispatch)
   (:export
-   ))
+   #:*char-mode*
+   #:*colon-mode*
+   #:*normal-mode*
+   #:*num-mode*
+   #:ascii
+   #:char-display-char
+   #:continue-chrome
+   #:display-ascii-hex-table
+   #:display-ascii-oct-table
+   #:kde-panel
+   #:kill-chrome
+   #:rot13
+   #:snd-jack
+   #:snd-jackd
+   #:snd-nojack
+   #:snd-pulse
+   #:stop-chrome
+   #:xrsync))
 
 (in-package :fare-scripts/shell-aliases)
 

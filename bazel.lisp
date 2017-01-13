@@ -2,7 +2,8 @@
 
 (uiop:define-package :fare-scripts/bazel
   (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre :cl-scripting)
-  (:export #:*bazel-dir* #:*bazel* #:bazel #:ss #:ngr #:make-bazel))
+  (:export #:*bazel-dir* #:*bazel* #:bazel #:ss #:ngr #:make-bazel
+           #:*java-home*))
 
 (in-package :fare-scripts/bazel)
 

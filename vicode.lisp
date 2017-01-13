@@ -2,7 +2,7 @@
 ;;; vicode - support for computing in vietnamese
 ;;;
 ;;; This contains code as translated from from my original perl script vncode
-;;; Copyright (c) 1996, 1997, 1998 François-René "Faré" Rideau DDan(.ng-Vu~ Ba^n
+;;; Copyright (c) 1996-1998, 2016 François-René "Faré" Rideau DDan(.ng-Vu~ Ba^n
 ;;;
 ;;; TODO: Use byte streams instead of character pseudo-streams assuming
 ;;; one-byte character and/or abusing the latin1 encoding.
