@@ -12,6 +12,7 @@
                "fare-scripts/bazel"
                "fare-scripts/git"
                "fare-scripts/languages"
+               "fare-scripts/network"
                "fare-scripts/random"
                "fare-scripts/repl"
                "fare-scripts/rescript"
