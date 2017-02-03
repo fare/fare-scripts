@@ -11,6 +11,7 @@
    #:*normal-mode*
    #:*num-mode*
    #:ascii
+   #:batt
    #:char-display-char
    #:continue-chrome
    #:display-ascii-hex-table
@@ -97,6 +98,11 @@
   (run/i `(kquitapp plasmashell))
   (run `(setsid plasmashell
 		(> ,(subpathname (temporary-directory) "plasmashell.out")) (>& 2 1))))
+
+(defun batt ()
+  (let* ((capacity (read-file-line "/sys/class/power_supply/BAT1/capacity"))
+         (status (read-file-line "/sys/class/power_supply/BAT1/status")))
+    (format t "~A% (~A)~%" capacity status)))
 
 );exporting-definitions
 
