@@ -11,7 +11,7 @@
    #:*normal-mode*
    #:*num-mode*
    #:ascii
-   #:batt
+   #:batt #:battery-status
    #:char-display-char
    #:continue-chrome
    #:display-ascii-hex-table
@@ -99,11 +99,16 @@
   (run `(setsid plasmashell
 		(> ,(subpathname (temporary-directory) "plasmashell.out")) (>& 2 1))))
 
-(defun batt ()
+(defun battery-status ()
   (let* ((capacity (read-file-line "/sys/class/power_supply/BAT1/capacity"))
          (status (read-file-line "/sys/class/power_supply/BAT1/status")))
-    (format t "~A% (~A)~%" capacity status)))
+    (format nil "~A% (~A)" capacity status)))
+
+(defun batt ()
+  (println (battery-status))
+  (values))
 
 );exporting-definitions
+
 
 (register-commands :fare-scripts/shell-aliases)
