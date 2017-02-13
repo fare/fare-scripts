@@ -11,6 +11,7 @@
 ;;; some lines of the form "ESSID: your ssid" are followed by
 ;;; a line "passphrase: your passphrase", in order of network preference.
 ;;;
+;;; Q: should it default to ~/.secrets/wireless.text ???
 (defvar *wireless-secrets* nil)
 (defun init-wireless-secrets ()
   (setf *wireless-secrets* (getenv-pathname "WIRELESS_SECRETS")))
@@ -20,10 +21,11 @@
   (or *wireless-secrets* (error "WIRELESS_SECRETS variable not defined")))
 
 (defun extract-fields (field-lengths line)
-  (loop :for (name start end) :in field-lengths :collect
+  (loop :with len = (length line)
+    :for (name start end) :in field-lengths :collect
     (progn
       name ;; ignore
-      (string-right-trim " " (subseq line start end)))))
+      (string-right-trim " " (subseq line start (min end len))))))
 
 (defun extract-field-lengths (fields)
   (loop :with start = 0 :with len = (length fields)
@@ -64,14 +66,19 @@
           (match (read-line s nil nil)
             ((ppcre "^pass(?:word|phrase): (.*)$" pass) (return pass)))))))
 
-(defun nmup (&optional connection passphrase)
+(defun nmup (&optional connection (passphrase :auto))
   (if connection
-      (let ((passphrase (or passphrase (get-wireless-passphrase connection))))
-        (with-temporary-file (:stream s :pathname passwd-file)
-          (format s "802-11-wireless-security.psk:~a~%" passphrase)
-          :close-stream
-          (run/i `(nmcli connection up ,connection passwd-file ,passwd-file))
-          (success)))
+      (let ((passphrase
+             (if (eq passphrase :auto)
+                 (get-wireless-passphrase connection)
+                 passphrase)))
+        (if passphrase
+            (with-temporary-file (:stream s :pathname passwd-file)
+              (format s "802-11-wireless-security.psk:~a~%" passphrase)
+              :close-stream
+              (run/i `(nmcli connection up ,connection passwd-file ,passwd-file)))
+            (run/i `(nmcli --ask connection up ,connection)))
+        (success))
       (nmauto)))
 
 (defun nmauto ()
@@ -87,8 +94,9 @@
             (when (gethash ssid table)
               (match (read-line s nil nil)
                 ((ppcre "^pass(?:word|phrase): (.*)$" pass)
-                 (nmup ssid pass)
-                 (return-from nmauto ssid))))))))))
+                 (nmup ssid pass))
+                (_ (nmup ssid nil)))
+              (return-from nmauto ssid))))))))
 )
 
 (register-commands :fare-scripts/network)
