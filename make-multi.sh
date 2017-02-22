@@ -1,4 +1,5 @@
-#!/bin/zsh -feu
+#!/bin/zsh -f
+set -eu
 
 has_dll () {
     [[ -n "$(ldconfig -p 2> /dev/null | grep -F ${1}.so)" ]]
@@ -10,9 +11,11 @@ else
     workout_timer=
 fi
 
+MULTI=${BINDIR}/${BINARCH}/fare-scripts
+
 A=(
   cl-launch
-  --output ${BINDIR}/${BINARCH}/multi --dump !
+  --output ${MULTI} --dump !
   --lisp sbcl
   --quicklisp
   --dispatch-system exscribe --system exscribe/typeset # add-on to exscribe
@@ -25,5 +28,5 @@ A=(
   --system-package lisp-stripper --dispatch-entry lispwc
 )
 $A $@
-multi fare-scripts-symlink
-multi help
+${MULTI} fare-scripts-symlinks
+${MULTI} help
