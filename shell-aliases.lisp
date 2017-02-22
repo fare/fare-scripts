@@ -99,13 +99,16 @@
   (run `(setsid plasmashell
 		(> ,(subpathname (temporary-directory) "plasmashell.out")) (>& 2 1))))
 
-(defun battery-status ()
-  (let* ((capacity (read-file-line "/sys/class/power_supply/BAT1/capacity"))
-         (status (read-file-line "/sys/class/power_supply/BAT1/status")))
-    (format nil "~A% (~A)" capacity status)))
+(defun battery-status (&optional out)
+  (with-output (out)
+    (loop :for dir :in (uiop:directory* #p"/sys/class/power_supply/BAT*/")
+      :for battery = (first (last (pathname-directory dir)))
+      :for capacity = (read-file-line (subpathname dir "capacity"))
+      :for status = (read-file-line (subpathname dir "status")) :do
+      (format out "~A: ~A% (~A)~%" battery capacity status))))
 
 (defun batt ()
-  (println (battery-status))
+  (princ (battery-status))
   (values))
 
 );exporting-definitions
