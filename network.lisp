@@ -2,7 +2,7 @@
 (uiop:define-package :fare-scripts/network
   (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre :cl-scripting)
   (:export
-   #:get-wireless-passphrase
+   #:get-wireless-connections #:get-wireless-passphrase
    #:nmup #:nmauto))
 
 (in-package :fare-scripts/network)
@@ -57,6 +57,12 @@
               field-lengths))))
 
 (exporting-definitions
+
+(defun get-wireless-connections ()
+  (destructuring-bind (fields . lines) (run/lines '(nmcli connection show --active))
+    (let ((field-lengths (extract-field-lengths fields)))
+      (loop :for line :in lines :collect
+        (first (extract-fields field-lengths line)))))) ;; dropping uuid type device
 
 (defun get-wireless-passphrase (essid)
   (with-input-file (s (get-wireless-secrets))
