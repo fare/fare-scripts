@@ -76,7 +76,7 @@
             (with-temporary-file (:stream s :pathname passwd-file)
               (format s "802-11-wireless-security.psk:~a~%" passphrase)
               :close-stream
-              (run/i `(nmcli connection up ,connection passwd-file ,passwd-file)))
+              (run/i `(nmcli connection up ,connection passwd-file ,passwd-file (>& 1 2))))
             (run/i `(nmcli --ask connection up ,connection)))
         (success))
       (nmauto)))
