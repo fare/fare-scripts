@@ -12,7 +12,6 @@
    #:*num-mode*
    #:ascii
    #:batt #:battery-status
-   #:char-display-char
    #:continue-chrome
    #:display-ascii-hex-table
    #:display-ascii-oct-table
@@ -28,12 +27,10 @@
 
 (in-package :fare-scripts/shell-aliases)
 
-(exporting-definitions
-
 (defun char-display-char (c)
   (if (or (member c '(127 155))
-	  (< c 32)
-	  (<= 128 c 159))
+          (< c 32)
+          (<= 128 c 159))
       #\space
     (code-char c)))
 
@@ -42,13 +39,15 @@
 (defvar *char-mode* "[0m[1m")
 (defvar *normal-mode* "[0m")
 
+(exporting-definitions
+
 (defun display-ascii-hex-table ()
   (loop for i from 32 to 255
     do (format t "~A~X~A:~A~A~A~:[ ~;~%~]"
-	       *num-mode* i
-	       *colon-mode* *char-mode*
-	       (char-display-char i)
-	       *normal-mode*
+               *num-mode* i
+               *colon-mode* *char-mode*
+               (char-display-char i)
+               *normal-mode*
                (zerop (mod (1+ i) 16))))
   (success))
 
@@ -57,10 +56,10 @@
 (defun display-ascii-oct-table ()
   (loop for i from 32 to 255
     do (format t "~A~3O~A~A~A~:[ ~;~%~]"
-	       *num-mode* i
-	       *char-mode*
-	       (char-display-char i)
-	       *normal-mode*
+               *num-mode* i
+               *char-mode*
+               (char-display-char i)
+               *normal-mode*
                (zerop (mod (1+ i) 16))))
   (success))
 
@@ -97,7 +96,7 @@
 (defun kde-panel ()
   (run/i `(kquitapp plasmashell))
   (run `(setsid plasmashell
-		(> ,(subpathname (temporary-directory) "plasmashell.out")) (>& 2 1))))
+                (> ,(subpathname (temporary-directory) "plasmashell.out")) (>& 2 1))))
 
 (defun battery-status (&optional out)
   (with-output (out)
