@@ -8,7 +8,7 @@
   (:export
    #:frob #:frop #:mkba #:mkba2
    #:myccl #:mychez #:myclisp #:myecl #:mygcl #:myhott #:mymkcl #:myplt
-   #:myrust #:mysbcl #:mysbcl-contrib #:upccl))
+   #:myrust #:mysbcl #:mysbcl-contrib #:upccl #:mygambit))
 
 (in-package :fare-scripts/languages)
 
@@ -187,6 +187,37 @@
       :when dir
       :do (run/i `(svn up (-r ,version) --ignore-externals ,dir) :show t))
     (success)))
+
+(defun mygambit ()
+  (with-current-directory ((subpathname (src-root) "scheme/gambit/"))
+    (run/i `(git clean -xfd))
+    (run/i `("./configure"))
+    (run/i `("make" "-j4" "current-gsc-boot"))
+    (run/i `("./configure"
+             ;; https://github.com/vyzo/gerbil/wiki/Getting-Started-with-Gerbil-development
+             ("--prefix=" ,(stow-root) "gambit")
+             "--enable-single-host"
+             "--enable-c-opt=-O6"
+             "--enable-gcc-opts"
+             "--enable-guide"
+             "--enable-shared"
+             "--enable-absolute-shared-libs"
+             ;; "--enable-profile"
+             ;; "--enable-coverage"
+             "--enable-inline-jumps"
+             ;; "--enable-char-size=1" ; default is 4
+             "--enable-multiple-versions"
+             "--enable-track-scheme"
+             "--enable-high-res-timing"
+             "--enable-max-processors=4"
+             "--enable-thread-system=posix"
+             "--enable-dynamic-tls"
+             ;;"--enable-multiple-vms"
+             "--enable-openssl"))
+    (run/i `("make" "-j4" "from-scratch"))
+    (run/i `("make" "check"))
+    (run/i `("make" "install")))
+  (success))
 
 );exporting-definitions
 

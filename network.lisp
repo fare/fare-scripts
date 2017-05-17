@@ -3,7 +3,7 @@
   (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre :cl-scripting)
   (:export
    #:get-wireless-connections #:get-wireless-passphrase
-   #:nmup #:nmauto))
+   #:nmup #:nmauto #:nowifi))
 
 (in-package :fare-scripts/network)
 
@@ -86,6 +86,10 @@
             (run/i `(nmcli --ask connection up ,connection)))
         (success))
       (nmauto)))
+
+(defun nowifi ()
+  (dolist (connection (get-wireless-connections))
+    (run/i `(nmcli connection down ,connection))))
 
 (defun nmauto ()
   (loop :with table = (make-hash-table :test 'equal)
