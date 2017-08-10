@@ -98,7 +98,8 @@
 
 (exporting-definitions
 
-(defun diceware-phrase (&optional (n-words 3) &rest more-rolls)
+;; 20 words of 5 dice is just over 258 bits.
+(defun diceware-phrase (&optional (n-words 20) &rest more-rolls)
   (let ((rolls
           (if (or more-rolls (not (typep n-words '(integer 1 99))))
               (cons n-words more-rolls)
