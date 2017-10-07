@@ -1,5 +1,6 @@
 (uiop:define-package :fare-scripts/random
-  (:use :cl :uiop :fare-utils :optima :optima.ppcre :binascii :cl-scripting)
+  (:use :cl :uiop :fare-utils :optima :optima.ppcre :binascii :cl-scripting
+        :inferior-shell :command-line-arguments)
   (:export
    ;; #:randomize #:random-bytes #:urandom
    ;; #:*diceware* #:*diceware-words*
@@ -15,6 +16,16 @@
 
 (register-image-restore-hook 'randomize)
 
+(defun shuffle-list (list &optional n)
+  (check-type list list)
+  (loop :with vec = (coerce list 'vector)
+    :with len = (length vec)
+    :repeat (if n (min n len) len)
+    :for end :downfrom len
+    :for i = (random end)
+    :for val = (aref vec i)
+    :do (setf (aref vec i) (aref vec (- end 1)))
+    :collect val))
 
 #|(defun ensure-prng ()
   (unless crypto:*prng* (setf crypto:*prng* (crypto:make-prng :fortuna))))|#
@@ -111,6 +122,36 @@
 
 (defun genresa ()
   (format nil "~36R" (random (expt 36 6))))
+
+(defun shuffle-lines (&optional n)
+  (let* ((lines (slurp-stream-lines *standard-input*))
+         (n (if n (parse-integer n) (length lines))))
+    (map () 'println (shuffle-list lines n)))
+  (values))
+
+(defun random-run (&rest arguments)
+  (nest
+   (multiple-value-bind (options args)
+       (process-command-line-options
+        '((("log" #\l) :type string :optional t :documentation "specify log file"))
+        arguments))
+   (destructuring-bind (&key log) options)
+   (let* ((pos (position "--" args :test 'equal))
+          (prefix (subseq args 0 pos))
+          (args-to-randomize (subseq args (1+ pos)))
+          (random-args (shuffle-list args-to-randomize))))
+   (flet ((do-it (logger)
+            (loop
+              :for arg :in random-args
+              :for command = `(,@prefix ,arg) :do
+              (funcall logger command)
+              (run/i command))))
+     (if log
+         (with-output-file (f log :if-exists :append)
+           (do-it (lambda (command) (format f "~A~%" (escape-shell-command command)))))
+         (do-it (constantly nil))))
+   (values)))
+
 
 );exporting-definitions
 
