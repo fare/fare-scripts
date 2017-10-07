@@ -27,6 +27,11 @@
     :do (setf (aref vec i) (aref vec (- end 1)))
     :collect val))
 
+(defun group-by (n list)
+  (loop :for len :downfrom (length list) :above 0 :by n
+    :for l = list :then (nthcdr n l)
+    :collect (subseq l 0 (min n len))))
+
 #|(defun ensure-prng ()
   (unless crypto:*prng* (setf crypto:*prng* (crypto:make-prng :fortuna))))|#
 
@@ -133,22 +138,25 @@
   (nest
    (multiple-value-bind (options args)
        (process-command-line-options
-        '((("log" #\l) :type string :optional t :documentation "specify log file"))
+        '((("log" #\l) :type string :optional t :documentation "specify log file")
+          (("at-once" #\a) :type integer :optional t :initial-value 1 :documentation "number of arguments at once"))
         arguments))
-   (destructuring-bind (&key log) options)
+   (destructuring-bind (&key log at-once) options)
    (let* ((pos (position "--" args :test 'equal))
           (prefix (subseq args 0 pos))
           (args-to-randomize (subseq args (1+ pos)))
           (random-args (shuffle-list args-to-randomize))))
    (flet ((do-it (logger)
-            (loop
-              :for arg :in random-args
-              :for command = `(,@prefix ,arg) :do
-              (funcall logger command)
-              (run/i command))))
+            (handler-case
+                (loop :for args :in (group-by at-once random-args)
+                  :for command = `(,@prefix ,@args) :do
+                  (funcall logger command)
+                  (run/i command))
+              (condition () (quit 3)))))
      (if log
-         (with-output-file (f log :if-exists :append)
-           (do-it (lambda (command) (format f "~A~%" (escape-shell-command command)))))
+         (do-it (lambda (command)
+                  (with-output-file (f log :if-exists :append)
+                    (format f "~A~%" (escape-shell-command command)))))
          (do-it (constantly nil))))
    (values)))
 
