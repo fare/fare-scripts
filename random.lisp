@@ -6,7 +6,7 @@
    ;; #:*diceware* #:*diceware-words*
    ;; #:dice #:roll-index #:roll-string #:get-diceware-words #:ensure-diceware-words
    ;; #:diceware-word
-   #:diceware-phrase #:genpasswd #:genresa
+   #:diceware-phrase #:genpasswd #:genresa #:random-run #:shuffle-lines
    ))
 
 (in-package :fare-scripts/random)
