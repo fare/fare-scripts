@@ -30,3 +30,4 @@ A=(
 $A $@
 ${MULTI} fare-scripts-symlinks
 ${MULTI} help
+echo ${MULTI}
