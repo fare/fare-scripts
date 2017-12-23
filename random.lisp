@@ -139,9 +139,10 @@
    (multiple-value-bind (options args)
        (process-command-line-options
         '((("log" #\l) :type string :optional t :documentation "specify log file")
+          (("echo" #\e) :type boolean :optional t :initial-value nil :documentation "echo command before and after")
           (("at-once" #\a) :type integer :optional t :initial-value 1 :documentation "number of arguments at once"))
         arguments))
-   (destructuring-bind (&key log at-once) options)
+   (destructuring-bind (&key log echo at-once) options)
    (let* ((pos (position "--" args :test 'equal))
           (prefix (subseq args 0 pos))
           (args-to-randomize (subseq args (1+ pos)))
@@ -151,13 +152,15 @@
                 (loop :for args :in (group-by at-once random-args)
                   :for command = `(,@prefix ,@args) :do
                   (funcall logger command)
-                  (run/i command))
+                  (run/i command :show echo))
               (condition () (quit 3)))))
      (if log
          (do-it (lambda (command)
                   (with-output-file (f log :if-exists :append)
                     (format f "~A~%" (escape-shell-command command)))))
-         (do-it (constantly nil))))
+         (do-it (constantly nil)))
+     (when echo
+       (format! t "That was ~A~%" (escape-shell-command command))))
    (values)))
 
 
