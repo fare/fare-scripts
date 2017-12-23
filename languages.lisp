@@ -102,18 +102,20 @@
     (success)))
 
 (defun mysbcl (&optional (install-root (subpathname (stow-root) "sbcl/")))
+  (DBG "Compiling a custom SBCL")
   (with-current-directory ((subpathname (common-lisp-src) "sbcl/"))
     (let ((out (subpathname (temporary-directory) "mysbcl.out")))
       (run/i `(pipe ("sh" "./make.sh" ("--prefix=",(nns install-root))
-                          ;; "--xc-host=/usr/bin/sbcl --disable-debugger --no-userinit --no-sysinit"
+                          ,@(when (probe-file "/usr/bin/sbcl")
+                              '("--xc-host=/usr/bin/sbcl --disable-debugger --no-userinit --no-sysinit"))
                           "--with-sb-threads" "--with-sb-linkable-runtime" "--with-sb-dynamic-core"
                           "--fancy" (>& 2 1))
-                    (tee ,out)))
+                    (tee ,out)) :show t)
       (ignore-errors
         (delete-directory-tree (subpathname install-root "lib/sbcl/")
                                :validate #'(lambda (p) (subpathp p install-root))))
       (run/i `(pipe (sh "./install.sh" (--prefix=,(nns install-root)))
-                    (tee -a ,out)))))
+                    (tee -a ,out)) :show t)))
   (success))
 
 (defun mysbcl-contrib (&optional (install-root (subpathname (stow-root) "sbcl/")))
