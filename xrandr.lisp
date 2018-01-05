@@ -21,7 +21,7 @@
 (defun touchscreen-device ()
   (dolist (line (run/lines '(xinput list)))
     (match line
-      ((ppcre "(ELAN21EF:00 04F3:21EF)\\s+id\=([0-9]{1,2})\\s+" _ x)
+      ((ppcre "(ELAN21EF:00 04F3:[0-9A-F]{4})\\s+id\=([0-9]{1,2})\\s+" _ x)
        (return (values (parse-integer x)))))))
 
 (defun configure-touchscreen (&key invert-x invert-y swap-xy)
