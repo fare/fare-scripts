@@ -18,15 +18,16 @@
        (list name (parse-integer id) value))
       (_ (error "Cannot parse device property line ~A" line)))))
 
-(defun touchscreen-device ()
-  (dolist (line (run/lines '(xinput list)))
-    (match line
-      ((ppcre "(ELAN21EF:00 04F3:[0-9A-F]{4})\\s+id\=([0-9]{1,2})\\s+" _ x)
-       (return (values (parse-integer x)))))))
+(defun touchscreen-devices ()
+  (while-collecting (c)
+    (dolist (line (run/lines '(xinput list)))
+      (match line
+        ((ppcre "(ELAN21EF:00 04F3:[0-9A-F]{4}|TPPS/2 IBM TrackPoint|SynPS/2 Synaptics TouchPad|Wacom Co.,Ltd. Pen and multitouch sensor (Pen|Finger))\\s+id\=([0-9]{1,2})\\s+" _ _ x)
+         (c (parse-integer x)))))))
 
 (defun configure-touchscreen (&key invert-x invert-y swap-xy)
   (nest
-   (if-let (ts (touchscreen-device)))
+   (dolist (ts (touchscreen-devices)))
    (if-let (properties (ignore-errors (xinput-device-properties ts))))
    (flet ((property-id (name) (second (find name properties :key 'first :test 'equal)))))
    (if-let (axis-inversion (property-id "Evdev Axis Inversion")))
