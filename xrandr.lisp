@@ -25,31 +25,32 @@
         ((ppcre "(ELAN21EF:00 04F3:[0-9A-F]{4}|TPPS/2 IBM TrackPoint|SynPS/2 Synaptics TouchPad|Wacom Co.,Ltd. Pen and multitouch sensor (Pen|Finger))\\s+id\=([0-9]{1,2})\\s+" _ _ x)
          (c (parse-integer x)))))))
 
-(defun configure-touchscreen (&key invert-x invert-y swap-xy)
-  (nest
-   (dolist (ts (touchscreen-devices)))
-   (if-let (properties (ignore-errors (xinput-device-properties ts))))
-   (flet ((property-id (name) (second (find name properties :key 'first :test 'equal)))))
-   (if-let (axis-inversion (property-id "Evdev Axis Inversion")))
-   (if-let (axes-swap (property-id "Evdev Axes Swap")))
-   (progn
-     (run/i `(xinput set-prop ,ts ,axis-inversion ,(if invert-x 1 0) ,(if invert-y 1 0)))
-     (run/i `(xinput set-prop ,ts ,axes-swap ,(if swap-xy 1 0))))))
+(defun configure-touchscreen (&key invert-x invert-y swap-xy matrix)
+  (dolist (ts (touchscreen-devices))
+    (if-let (properties (ignore-errors (xinput-device-properties ts)))
+      (flet ((property-id (name) (second (find name properties :key 'first :test 'equal))))
+        (if-let (c-t-m (property-id "Coordinate Transformation Matrix"))
+          (run/i `(xinput set-prop ,ts ,c-t-m ,@matrix) :on-error nil)
+          (if-let (axis-inversion (property-id "Evdev Axis Inversion"))
+            (if-let (axes-swap (property-id "Evdev Axes Swap"))
+              (progn
+                (run/i `(xinput set-prop ,ts ,axis-inversion ,(if invert-x 1 0) ,(if invert-y 1 0)))
+                (run/i `(xinput set-prop ,ts ,axes-swap ,(if swap-xy 1 0)))))))))))
 
 (exporting-definitions
 
 (defun screen-device-up (&optional (device (current-device)))
   (run/i `(xrandr --output ,device --rotate normal))
-  (configure-touchscreen :invert-x nil :invert-y nil :swap-xy nil))
+  (configure-touchscreen :invert-x nil :invert-y nil :swap-xy nil :matrix '(1 0 0  0 1 0  0 0 1)))
 (defun screen-device-right (&optional (device (current-device)))
   (run/i `(xrandr --output ,device --rotate right))
-  (configure-touchscreen :invert-x nil :invert-y t :swap-xy t))
+  (configure-touchscreen :invert-x nil :invert-y t :swap-xy t :matrix '(0 1 0  -1 0 1  0 0 1)))
 (defun screen-device-down (&optional (device (current-device)))
   (run/i `(xrandr --output ,device --rotate inverted))
-  (configure-touchscreen :invert-x t :invert-y t :swap-xy nil))
+  (configure-touchscreen :invert-x t :invert-y t :swap-xy nil :matrix '(-1 0 1  0 -1 1  0 0 1)))
 (defun screen-device-left (&optional (device (current-device)))
   (run/i `(xrandr --output ,device --rotate left))
-  (configure-touchscreen :invert-x t :invert-y nil :swap-xy t))
+  (configure-touchscreen :invert-x t :invert-y nil :swap-xy t :matrix '(0 -1 1  1 0 0  0 0 1)))
 
 );exporting-definitions
 

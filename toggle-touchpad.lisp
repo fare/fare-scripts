@@ -18,7 +18,7 @@
 (defun get-touchpad-id ()
   (dolist (line (run/lines '(xinput list)))
     (match line
-      ((ppcre "(TouchPad|\\sSYNA.*|Synaptics\\s.*)\\s+id\=([0-9]{1,2})\\s+" _ x)
+      ((ppcre "(TouchPad|\\sSYNA.*|Synaptics\\s.*|SynPS/2 Synaptics TouchPad)\\s+id\=([0-9]{1,2})\\s+" _ x)
        (return (values (parse-integer x)))))))
 
 (defun device-enabled-p (&optional (id (get-touchpad-id)))
