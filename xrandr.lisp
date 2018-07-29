@@ -22,10 +22,13 @@
   (while-collecting (c)
     (dolist (line (run/lines '(xinput list)))
       (match line
-        ((ppcre "(ELAN21EF:00 04F3:[0-9A-F]{4}|TPPS/2 IBM TrackPoint|SynPS/2 Synaptics TouchPad|Wacom Co.,Ltd. Pen and multitouch sensor (Pen|Finger))\\s+id\=([0-9]{1,2})\\s+" _ _ x)
+        ((ppcre "(ELAN21EF:00 04F3:[0-9A-F]{4}|TPPS/2 IBM TrackPoint|SynPS/2 Synaptics TouchPad|Wacom Co.,Ltd. Pen and multitouch sensor (Pen.*|Finger))\\s+id\=([0-9]{1,2})\\s+" _ _ x)
          (c (parse-integer x)))))))
 
 (defun configure-touchscreen (&key invert-x invert-y swap-xy matrix)
+  "Configure all builtin pointer devices to follow the given orientation.
+INVERT-X, INVERT-Y and SWAP-XY specify how to configure the devices with the Evdev mechanism;
+MATRIX specifies how to configure the devices with the Coordinate Transformation Matrix mechanism."
   (dolist (ts (touchscreen-devices))
     (if-let (properties (ignore-errors (xinput-device-properties ts)))
       (flet ((property-id (name) (second (find name properties :key 'first :test 'equal))))
