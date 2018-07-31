@@ -26,6 +26,16 @@ Contents:
 
 * [commands.lisp](commands.lisp): functions to manage commands in my PATH.
 
+* [edgar.lisp](edgar.lisp): accessing the EDGAR database from the SEC.gov.
+
+* [git.lisp](git.lisp): some utility for git.
+
+* [gutenberg.lisp](gutenberg.lisp): downloading and processing text from Project Gutenberg.
+
+* [languages.lisp](languages.lisp): scripts to bootstrap various programming languages my way.
+
+* [network.lisp](network.lisp): wrappers for network-manager
+
 * [obsolete-shell-aliases.lisp](obsolete-shell-aliases.lisp): functions I don't use any more,
   kept around for archival purposes after conversion from shell to Lisp.
 
@@ -47,3 +57,10 @@ Contents:
 * [unmime.lisp](unmime.lisp): filter that's semi-useful when processing
   mime files as e.g. decrypted from PGP encrypted mail.
 
+* [vicode.lisp](vicode.lisp): deal with various vietnamese encodings
+
+* [vicode-test.lisp](vicode-test.lisp): mini test-suite for vicode
+
+* [viet-practice.lisp](viet-practice.lisp): memorization exercises for Vietnamese, courtesy of Robert Strandh
+
+* [xrandr.lisp](xrandr.lisp): wrappers around xrandr, notably for dealing with screen orientation.
