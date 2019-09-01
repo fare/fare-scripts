@@ -8,7 +8,7 @@
 
 ;; TODO: write a real parser for xrandr output?
 
-(defun current-device () "eDP1")
+(defun current-device () "eDP-1")
 
 (defun xinput-device-properties (device-id)
   (loop :for line :in (cdr (run/lines `(xinput list-props ,device-id))) :collect
