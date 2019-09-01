@@ -204,6 +204,7 @@
              "--enable-absolute-shared-libs"
              "--enable-poll"
              "--enable-openssl"
+             "--enable-default-runtime-options=f8,-8,t8" ;; Default to UTF-8 for source and all I/O
 
              ;; "--enable-guide"
              ;; "--enable-profile"
