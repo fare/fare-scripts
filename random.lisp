@@ -151,16 +151,17 @@
             (handler-case
                 (loop :for args :in (group-by at-once random-args)
                   :for command = `(,@prefix ,@args) :do
-                  (funcall logger command)
+                  (funcall logger prefix args)
                   (run/i command :show echo))
               (condition () (quit 3)))))
      (if log
-         (do-it (lambda (command)
+         (do-it (lambda (prefix args)
+                  (declare (ignore prefix))
                   (with-output-file (f log :if-exists :append)
-                    (format f "~A~%" (escape-shell-command command)))))
+                    (format f "~A~%" (escape-shell-command args)))))
          (do-it (constantly nil)))
      (when echo
-       (format! t "That was ~A~%" (escape-shell-command command))))
+       (format! t "That was ~A~%" (escape-shell-command `(,@prefix ,@random-args)))))
    (values)))
 
 
