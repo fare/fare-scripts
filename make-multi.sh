@@ -26,6 +26,8 @@ A=(
   ${workout_timer}
   --system fare-scripts # Many of its subsystems register their own functions!
   --system-package lisp-stripper --dispatch-entry lispwc
+  --eval "(map () 'asdf::register-immutable-system (asdf::registered-systems))"
+  --eval "(uiop:println \"foo\")"
 )
 $A $@
 ${MULTI} fare-scripts-symlinks
