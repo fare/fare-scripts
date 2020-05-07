@@ -198,7 +198,7 @@
              ;; https://github.com/vyzo/gerbil/wiki/Getting-Started-with-Gerbil-development
              ("--prefix=" ,(stow-root) "gambit")
              "--enable-single-host"
-             "--enable-c-opt=-O2"
+             "--enable-c-opt=-O1" ;; -O1 compiles faster, even though -Os is better performance
              "--enable-gcc-opts"
              "--enable-shared"
              "--enable-absolute-shared-libs"
