@@ -26,7 +26,7 @@ A=(
   ${workout_timer}
   --system fare-scripts # Many of its subsystems register their own functions!
   --system-package lisp-stripper --dispatch-entry lispwc
-  --eval "(map () 'asdf::register-immutable-system (asdf::registered-systems))"
+  --eval "(map () 'asdf::register-immutable-system (remove \"cl-launch-program\" (asdf::registered-systems) :test 'equal))"
   --eval "(uiop:println \"foo\")"
 )
 $A $@
