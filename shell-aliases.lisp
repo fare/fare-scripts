@@ -102,8 +102,8 @@
   (with-output (out)
     (loop :for dir :in (uiop:directory* #p"/sys/class/power_supply/BAT*/")
       :for battery = (first (last (pathname-directory dir)))
-      :for capacity = (read-file-line (subpathname dir "capacity"))
-      :for status = (read-file-line (subpathname dir "status")) :do
+      :for capacity = (ignore-errors (read-file-line (subpathname dir "capacity")))
+      :for status = (ignore-errors (read-file-line (subpathname dir "status"))) :do
       (format out "~A: ~A% (~A)~%" battery capacity status))))
 
 (defun batt ()
