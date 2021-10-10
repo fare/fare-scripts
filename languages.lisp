@@ -197,15 +197,15 @@
     (run/i `("./configure"
              ;; https://github.com/vyzo/gerbil/wiki/Getting-Started-with-Gerbil-development
              ("--prefix=" ,(stow-root) "gambit")
+             "--enable-targets=arm,java,js,php,python,ruby,x86,x86-64"
              "--enable-single-host"
-             "--enable-c-opt=-O1" ;; -O1 compiles faster, even though -Os is better performance
+             "--enable-c-opt=-O1" ;; -O1 compiles faster, even though -Os has overall better performance
              "--enable-gcc-opts"
              "--enable-shared"
              "--enable-absolute-shared-libs"
              "--enable-poll"
              "--enable-openssl"
-             "--enable-default-runtime-options=f8,-8,t8" ;; Default to UTF-8 for source and all I/O
-
+             ;;"--enable-default-runtime-options=f8,-8,t8" ;; Default to UTF-8 for source and all I/O
              ;; "--enable-guide"
              ;; "--enable-profile"
              ;; "--enable-coverage"
@@ -213,9 +213,11 @@
              ;; "--enable-char-size=1" ; default is 4
              ;; "--enable-multiple-versions"
              ;; "--enable-multiple-vms"
+             ;; "--enable-smp"
+             ;; "--enable-thread-system"
+             ;; "--enable-max-processors=4"
              ;; "--enable-track-scheme"
              ;; "--enable-high-res-timing"
-             ;; "--enable-max-processors=4"
              ;; "--enable-thread-system=posix"
              ;; "--enable-dynamic-tls"
              ;; "--enable-openssl"
@@ -223,6 +225,7 @@
     (run/i `("make" "-j4" "current-gsc-boot"))
     (run/i `("make" "-j4" "from-scratch"))
     (run/i `("make" "check"))
+    (run/i `("make" "-j4" "modules"))
     (run/i `("make" "install")))
   (success))
 
