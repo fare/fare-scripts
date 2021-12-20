@@ -3,7 +3,7 @@
 
 (defpackage :fare-scripts/rescript
   (:use :common-lisp :uiop)
-  (:export #:superscriptize #:subscriptize #:upsidedown #:leftright #:mathbb #:smallcaps))
+  (:export #:superscriptize #:subscriptize #:upsidedown #:leftright #:mathbb #:smallcaps #:fbchange))
 
 (in-package :fare-scripts/rescript)
 
@@ -57,6 +57,10 @@
 (define-script-translation smallcaps
   " ABCDEFGHIJKLMNOPRSTUVWYZ"
   " ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘʀsᴛᴜᴠᴡʏᴢ")
+
+(define-script-translation fbchange
+  " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&_?!\"'.,;" ; nah: ԁг
+  " аbсdеfghіјklmոοрԛrѕtυѵԝхуzАВСDЕFGHӀЈКLМNОРԚRЅТUѴԜXҮZ0123456789&_?!\"'.,;") ; асеіјոοрԛυѵѕԝхуAВСЕКӀЈМОРԚЅТѴԜХҮ
 
 (defun search-char-name (subname)
   (loop

@@ -8,7 +8,7 @@
   (:export
    #:frob #:frop #:mkba #:mkba2
    #:myccl #:mychez #:myclisp #:myecl #:mygcl #:myhott #:mymkcl #:myplt
-   #:myrust #:mysbcl #:mysbcl-contrib #:upccl #:mygambit))
+   #:myrust #:mysbcl #:mysbcl-contrib #:upccl #:mygambit #:mygerbil))
 
 (in-package :fare-scripts/languages)
 
@@ -197,7 +197,7 @@
     (run/i `("./configure"
              ;; https://github.com/vyzo/gerbil/wiki/Getting-Started-with-Gerbil-development
              ("--prefix=" ,(stow-root) "gambit")
-             "--enable-targets=arm,java,js,php,python,ruby,x86,x86-64"
+             "--enable-targets=js" ;; "arm,java,js,php,python,ruby,x86,x86-64"
              "--enable-single-host"
              "--enable-c-opt=-O1" ;; -O1 compiles faster, even though -Os has overall better performance
              "--enable-gcc-opts"
@@ -228,6 +228,16 @@
     (run/i `("make" "-j4" "modules"))
     (run/i `("make" "install")))
   (success))
+
+(defun mygerbil ()
+  (with-current-directory ((subpathname (src-root) "fare/gerbil/"))
+    (run/i `("./configure" ("--prefix=" ,(stow-root) "gerbil/")
+                           ("--with-gambit=" ,(stow-root) "gambit/")
+                           "--enable-zlib"
+                           "--enable-leveldb"
+                           "--enable-sqlite"))
+    (run/i `("./src/build.sh"))
+    (run/i `("./install"))))
 
 );exporting-definitions
 
