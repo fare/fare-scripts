@@ -230,13 +230,13 @@
   (success))
 
 (defun mygerbil ()
-  (with-current-directory ((subpathname (src-root) "fare/gerbil/"))
+  (with-current-directory ((subpathname (src-root) "fare/gerbil/src"))
     (run/i `("./configure" ("--prefix=" ,(stow-root) "gerbil/")
                            ("--with-gambit=" ,(stow-root) "gambit/")
                            "--enable-zlib"
                            "--enable-leveldb"
                            "--enable-sqlite"))
-    (run/i `("./src/build.sh"))
+    (run/i `("./build.sh"))
     (run/i `("./install"))))
 
 );exporting-definitions
