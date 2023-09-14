@@ -200,11 +200,14 @@
              "--enable-targets=js" ;; "arm,java,js,php,python,ruby,x86,x86-64"
              "--enable-single-host"
              "--enable-c-opt=-O1" ;; -O1 compiles faster, even though -Os has overall better performance
+             "--enable-c-opt-rts=-O2"
              "--enable-gcc-opts"
              "--enable-shared"
              "--enable-absolute-shared-libs"
              "--enable-poll"
              "--enable-openssl"
+             "--enable-trust-c-tco"
+             "--enable-dynamic-clib"
              ;;"--enable-default-runtime-options=f8,-8,t8" ;; Default to UTF-8 for source and all I/O
              ;; "--enable-guide"
              ;; "--enable-profile"
@@ -230,14 +233,21 @@
   (success))
 
 (defun mygerbil ()
-  (with-current-directory ((subpathname (src-root) "fare/gerbil/src"))
+  (with-current-directory ((subpathname (src-root) "fare/gerbil"))
+    ;; TODO: export GERBIL_BUILD_CORES ?
     (run/i `("./configure" ("--prefix=" ,(stow-root) "gerbil/")
-                           ("--with-gambit=" ,(stow-root) "gambit/")
+                           ;;("--with-gambit=" ,(stow-root) "gambit/") ;; now builtin
+                           "--enable-shared"
+                           "--enable-deprecated"
+                           "--enable-libxml"
+                           "--enable-libyaml"
                            "--enable-zlib"
-                           "--enable-leveldb"
-                           "--enable-sqlite"))
+                           "--enable-sqlite"
+                           "--enable-mysql"
+                           "--enable-lmdb"
+                           "--enable-leveldb"))
     (run/i `("./build.sh"))
-    (run/i `("./install"))))
+    (run/i `("./install.sh"))))
 
 );exporting-definitions
 
