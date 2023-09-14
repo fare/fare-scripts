@@ -235,7 +235,7 @@
 (defun mygerbil ()
   (with-current-directory ((subpathname (src-root) "fare/gerbil"))
     ;; TODO: export GERBIL_BUILD_CORES ?
-    (run/i `("./configure" ("--prefix=" ,(stow-root) "gerbil/")
+    (run/i `("./configure" ("--prefix=" ,(stow-root) "gerbil")
                            ;;("--with-gambit=" ,(stow-root) "gambit/") ;; now builtin
                            "--enable-shared"
                            "--enable-deprecated"
