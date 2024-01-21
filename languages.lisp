@@ -197,7 +197,7 @@
     (run/i `("./configure"
              ;; https://github.com/vyzo/gerbil/wiki/Getting-Started-with-Gerbil-development
              ("--prefix=" ,(stow-root) "gambit")
-             "--enable-targets=js" ;; "arm,java,js,php,python,ruby,x86,x86-64"
+             "--enable-targets=C,js" ;; NO:  java,php,python,ruby  arm,riscv-32,riscv-64,x86,x86-64
              "--enable-single-host"
              "--enable-c-opt=-O1" ;; -O1 compiles faster, even though -Os has overall better performance
              "--enable-c-opt-rts=-O2"
@@ -205,10 +205,9 @@
              "--enable-shared"
              "--enable-absolute-shared-libs"
              "--enable-poll"
-             "--enable-openssl"
              "--enable-trust-c-tco"
              "--enable-dynamic-clib"
-             ;;"--enable-default-runtime-options=f8,-8,t8" ;; Default to UTF-8 for source and all I/O
+             ;; "--enable-default-runtime-options=f8,-8,tE8" ;; Default to UTF-8 for source and all I/O
              ;; "--enable-guide"
              ;; "--enable-profile"
              ;; "--enable-coverage"
@@ -228,24 +227,21 @@
     (run/i `("make" "-j4" "current-gsc-boot"))
     (run/i `("make" "-j4" "from-scratch"))
     (run/i `("make" "check"))
-    (run/i `("make" "-j4" "modules"))
+    ;;(run/i `("make" "-j4" "modules"))
     (run/i `("make" "install")))
   (success))
 
 (defun mygerbil ()
   (with-current-directory ((subpathname (src-root) "fare/gerbil"))
-    ;; TODO: export GERBIL_BUILD_CORES ?
-    (run/i `("./configure" ("--prefix=" ,(stow-root) "gerbil")
-                           ;;("--with-gambit=" ,(stow-root) "gambit/") ;; now builtin
+    (setf (getenv "GERBIL_BUILD_CORES")
+          (run-program '("grep" "-c" "^processor.:" "/proc/cpuinfo") :output :line))
+    (run/i `("./configure" ("--prefix=" ,(stow-root) "gerbil/gerbil")
+                           ;;"--with-gambit=master" ;; master, v4.9.5 or other branch or tag
                            "--enable-shared"
-                           "--enable-deprecated"
-                           "--enable-libxml"
-                           "--enable-libyaml"
+                           "--disable-deprecated"
                            "--enable-zlib"
                            "--enable-sqlite"
-                           "--enable-mysql"
-                           "--enable-lmdb"
-                           "--enable-leveldb"))
+                           ))
     (run/i `("./build.sh"))
     (run/i `("./install.sh"))))
 
