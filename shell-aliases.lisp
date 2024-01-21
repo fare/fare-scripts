@@ -100,14 +100,15 @@
 
 (defun battery-status (&optional out)
   (with-output (out)
-    (loop :for dir :in (uiop:directory* #p"/sys/class/power_supply/BAT*/")
+    (loop :for dir :in (uiop:directory* #p"/sys/class/power_supply/*/")
       :for battery = (first (last (pathname-directory dir)))
       :for capacity = (ignore-errors (read-file-line (subpathname dir "capacity")))
-      :for status = (ignore-errors (read-file-line (subpathname dir "status"))) :do
-      (format out "~A: ~A% (~A)~%" battery capacity status))))
+      :for status = (ignore-errors (read-file-line (subpathname dir "status")))
+          :when (and capacity status) :do
+            (format out "~A: ~A% (~A)~%" battery capacity status))))
 
 (defun batt ()
-  (princ (battery-status))
+  (battery-status t)
   (values))
 
 );exporting-definitions
