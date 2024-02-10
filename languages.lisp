@@ -240,8 +240,8 @@
                            "--enable-shared"
                            "--disable-deprecated"
                            "--enable-zlib"
-                           "--enable-sqlite"
-                           ))
+                           "--enable-sqlite"))
+    (run/i `("make" "clean"))
     (run/i `("./build.sh"))
     (run/i `("./install.sh"))))
 
