@@ -8,7 +8,8 @@
   (:export
    #:frob #:frop #:mkba #:mkba2
    #:myccl #:mychez #:myclisp #:myecl #:mygcl #:myhott #:mymkcl #:myplt
-   #:myrust #:mysbcl #:mysbcl-contrib #:upccl #:mygambit #:mygerbil))
+   #:myrust #:mysbcl #:mysbcl-contrib #:upccl #:mygambit #:mygerbil ;; #:myracket
+   ))
 
 (in-package :fare-scripts/languages)
 
@@ -223,6 +224,7 @@
              ;; "--enable-thread-system=posix"
              ;; "--enable-dynamic-tls"
              ;; "--enable-openssl"
+             ;; --enable-debug --enable-debug-log --enable-debug-c-backtrace --enable-debug-ctrl-flow-history --enable-debug-host-changes --enable-debug-alloc-mem --enable-debug-garbage-collect
              ))
     (run/i `("make" "-j4" "current-gsc-boot"))
     (run/i `("make" "-j4" "from-scratch"))
@@ -235,6 +237,7 @@
   (with-current-directory ((subpathname (src-root) "fare/gerbil"))
     (setf (getenv "GERBIL_BUILD_CORES")
           (run-program '("grep" "-c" "^processor.:" "/proc/cpuinfo") :output :line))
+    (run/i `("pwd"))
     (run/i `("./configure" ("--prefix=" ,(stow-root) "gerbil/gerbil")
                            ;;"--with-gambit=master" ;; master, v4.9.5 or other branch or tag
                            "--enable-shared"
@@ -244,6 +247,10 @@
     (run/i `("make" "clean"))
     (run/i `("./build.sh"))
     (run/i `("./install.sh"))))
+
+;;(defun myracket ()
+;;  (with-current-directory ((subpathname (src-root) "racket/racket"))
+;;    (run/i `("make" ("CONFIGURE_ARGS=" "--prefix=" ,(stow-root) "racket")))))
 
 );exporting-definitions
 

@@ -17,6 +17,7 @@
    #:display-ascii-oct-table
    #:kde-panel
    #:kill-chrome
+   #:read-file-integer
    #:rot13
    #:snd-jack
    #:snd-jackd
@@ -98,14 +99,20 @@
   (run `(setsid plasmashell
                 (> ,(subpathname (temporary-directory) "plasmashell.out")) (>& 2 1))))
 
+(defun read-file-integer (dir file)
+  (ignore-errors (parse-integer (read-file-line (subpathname dir file)))))
+
 (defun battery-status (&optional out)
   (with-output (out)
     (loop :for dir :in (uiop:directory* #p"/sys/class/power_supply/*/")
       :for battery = (first (last (pathname-directory dir)))
-      :for capacity = (ignore-errors (read-file-line (subpathname dir "capacity")))
+      :for capacity = (or (read-file-integer dir "capacity")
+                          (let ((en (read-file-integer dir "energy_now"))
+                                (ef (read-file-integer dir "energy_full")))
+                            (and en ef (plusp ef) (/ en ef .01))))
       :for status = (ignore-errors (read-file-line (subpathname dir "status")))
           :when (and capacity status) :do
-            (format out "~A: ~A% (~A)~%" battery capacity status))))
+            (format out "~A:~@[ ~,1F%~] (~A)~%" battery capacity status))))
 
 (defun batt ()
   (battery-status t)
