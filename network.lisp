@@ -58,6 +58,11 @@
 
 (exporting-definitions
 
+(defun wireless-connection-status ()
+  "Wireless connection status"
+  (let ((connections (ignore-errors (fare-scripts/network:get-wireless-connections))))
+    (format nil "~{Connected to ~A~%~}" connections)))
+
 (defun get-wireless-connections ()
   (destructuring-bind (fields . lines) (run/lines '(nmcli connection show --active))
     (let ((field-lengths (extract-field-lengths fields)))

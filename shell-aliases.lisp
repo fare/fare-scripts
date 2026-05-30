@@ -89,9 +89,11 @@
    :output :interactive :input :interactive :error-output nil :on-error nil))
 
 (defun stop-chrome ()
+  "Stop Chrome"
   (kill-chrome "-STOP"))
 
 (defun continue-chrome ()
+  "Continue Chrome"
   (kill-chrome "-CONT"))
 
 (defun kde-panel ()

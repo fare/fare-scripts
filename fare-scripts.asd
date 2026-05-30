@@ -9,6 +9,7 @@
   :depends-on ((:version "cl-scripting" "0.1")
                (:version "inferior-shell" "2.0.3.3")
                (:version "fare-utils" "1.0.0.5")
+               "fare-scripts/audio"
                "fare-scripts/bazel"
                "fare-scripts/git"
                "fare-scripts/languages"
@@ -21,4 +22,4 @@
                "fare-scripts/typographie"
                "fare-scripts/unmime"
                "fare-scripts/vicode"
-               "fare-scripts/xrandr"))
+               "fare-scripts/video"))

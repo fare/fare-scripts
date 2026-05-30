@@ -10,8 +10,8 @@
 (uiop:define-package :fare-scripts/toggle-touchpad
   (:use :cl :fare-utils :uiop :inferior-shell
         :optima :optima.ppcre :cl-scripting)
-  (:export #:help #:get-touchpad-id #:device-enabled-p
-           #:toggle-device #:disable-device #:enable-device))
+  (:export #:help #:get-touchpad-id #:touchpad-enabled-p
+           #:toggle-touchpad #:disable-touchpad #:enable-touchpad))
 
 (in-package :fare-scripts/toggle-touchpad)
 
@@ -21,23 +21,25 @@
       ((ppcre "(TouchPad|\\sSYNA.*|Synaptics\\s.*|SynPS/2 Synaptics TouchPad)\\s+id\=([0-9]{1,2})\\s+" _ x)
        (return (values (parse-integer x)))))))
 
-(defun device-enabled-p (&optional (id (get-touchpad-id)))
+(defun touchpad-enabled-p (&optional (id (get-touchpad-id)))
   (dolist (line (run/lines `(xinput list-props ,id)))
     (match line
-      ((ppcre "Device Enabled\\s+[():0-9]+\\s+([01])" x) (return (equal x "1"))))))
+      ((ppcre "Touchpad Enabled\\s+[():0-9]+\\s+([01])" x) (return (equal x "1"))))))
 
-(defun toggle-device (&optional (id (get-touchpad-id)) (on :toggle))
+(defun toggle-touchpad (&optional (id (get-touchpad-id)) (on :toggle))
   (let ((state (ecase on
-                 ((:toggle) (not (device-enabled-p id)))
+                 ((:toggle) (not (touchpad-enabled-p id)))
                  ((nil t) on))))
     (run `(xinput ,(if state 'enable 'disable) ,id)))
   (success))
 
-(defun enable-device (&optional (id (get-touchpad-id)))
-  (toggle-device id t))
+(defun enable-touchpad (&optional (id (get-touchpad-id)))
+  "Enable touchpad"
+  (toggle-touchpad id t))
 
-(defun disable-device (&optional (id (get-touchpad-id)))
-  (toggle-device id nil))
+(defun disable-touchpad (&optional (id (get-touchpad-id)))
+  "Disable touchpad"
+  (toggle-touchpad id nil))
 
 (defun help (&optional (output *standard-output*))
   (format output "toggle-touchpad functions: ~{~(~A~)~^ ~}~%"
@@ -46,7 +48,7 @@
 
 (defun main (argv) ;; TODO: use command-line-arguments, or CLON
   (cond
-    ((null argv) (toggle-device))
+    ((null argv) (toggle-touchpad))
     ((eql (first-char (first argv)) #\() (eval (first argv)))
     (t (if-let (fun (package-function :fare-scripts/toggle-touchpad
                                       (standard-case-symbol-name (first argv))))
