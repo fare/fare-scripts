@@ -3,8 +3,8 @@
         :optima :optima.ppcre
         :inferior-shell :cl-scripting :cl-launch/dispatch)
   (:export
-   #:volume-status
-   #:toggle-volume
+   #:volume-status #:toggle-volume #:lower-volume #:raise-volume #:minimize-volume #:maximize-volume
+   #:microphone-status #:toggle-microphone
    ))
 
 (in-package :fare-scripts/audio)
