@@ -2,7 +2,8 @@
 (uiop:define-package :fare-scripts/network
   (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre :cl-scripting)
   (:export
-   #:get-wireless-connections #:get-wireless-passphrase
+   #:wireless-connection-status
+   #:get-network-connections #:get-wireless-passphrase
    #:nmup #:nmauto #:nowifi))
 
 (in-package :fare-scripts/network)
@@ -39,35 +40,43 @@
 
 (defun parse-nmcli-list-line (field-lengths)
   (lambda (line)
-    (destructuring-bind (connected ssid mode chan rate signal bars security)
+    (destructuring-bind (in-use bssid ssid mode chan rate signal bars security)
         (extract-fields field-lengths line)
-      (declare (ignore bars))
-      (list (equal connected "*")
+      (list (equal in-use "*")
+            bssid
             ssid
             mode
             (parse-integer chan)
             (parse-integer rate :junk-allowed t) ;; "54 Mbit/s"
             (parse-integer signal)
+            bars
             (split-string (string-right-trim " " security))))))
 
-(defun nmcli-list ()
-  (destructuring-bind (fields . lines) (run/lines '(nmcli device wifi list))
+;; in-use bssid ssid mode chan rate signal bars security
+(defun nmcli-list (&optional ifname)
+  (destructuring-bind (fields . lines)
+      (run/lines `(nmcli device wifi list --rescan no ,@(when ifname `(ifname ,ifname))))
     (let ((field-lengths (extract-field-lengths fields)))
       (values (mapcar (parse-nmcli-list-line field-lengths) lines)
               field-lengths))))
 
 (exporting-definitions
 
-(defun wireless-connection-status ()
+(defun wireless-connection-status (&optional (s t))
   "Wireless connection status"
-  (let ((connections (ignore-errors (fare-scripts/network:get-wireless-connections))))
-    (format nil "~{Connected to ~A~%~}" connections)))
+  (loop :for (name uuid type device) :in (ignore-errors (get-network-connections))
+        :when (equal type "wifi")
+          :do (loop :for (in-use bssid ssid mode chan rate signal bars security)
+                      :in (nmcli-list device)
+                    :when in-use
+                      :do (format s "~A connected to ~A ~A~%" device ssid bars)))
+  (values))
 
-(defun get-wireless-connections ()
+;; (list-of (list name uuid type device)) <-
+(defun get-network-connections ()
   (destructuring-bind (fields . lines) (run/lines '(nmcli connection show --active))
     (let ((field-lengths (extract-field-lengths fields)))
-      (loop :for line :in lines :collect
-        (first (extract-fields field-lengths line)))))) ;; dropping uuid type device
+      (loop :for line :in lines :collect (extract-fields field-lengths line)))))
 
 (defun get-wireless-passphrase (essid)
   (with-input-file (s (get-wireless-secrets))
@@ -93,8 +102,11 @@
       (nmauto)))
 
 (defun nowifi ()
-  (dolist (connection (get-wireless-connections))
-    (run/i `(nmcli connection down ,connection))))
+  (dolist (connection (get-network-connections))
+    (destructuring-bind (name uuid type device) connection
+      (declare (ignore uuid device))
+      (when (equal type "wifi")
+        (run/i `(nmcli connection down ,name))))))
 
 (defun nmauto ()
   (loop :with table = (make-hash-table :test 'equal)
