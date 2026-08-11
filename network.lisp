@@ -3,7 +3,9 @@
   (:use :cl :fare-utils :uiop :inferior-shell :optima :optima.ppcre :cl-scripting)
   (:export
    #:wireless-connection-status
+   #:wireless-devices #:wireless-device-status
    #:get-network-connections #:get-wireless-passphrase
+   #:get-wireless-devices
    #:nmup #:nmauto #:nowifi))
 
 (in-package :fare-scripts/network)
@@ -16,7 +18,28 @@
 (defvar *wireless-secrets* nil)
 (defun init-wireless-secrets ()
   (setf *wireless-secrets* (getenv-pathname "WIRELESS_SECRETS")))
+
+
 (register-image-restore-hook 'init-wireless-secrets t)
+
+(defun bars-string (level noise)
+  (let* ((snr (- level noise))) ;; signal-to-noise ratio
+    (cond ;; ▂▄▆█ ▂▄▆░ ▂▄░░ ▂░░░ ░░░░ ;; ▂▄▆█ ▂▄▆_ ▂▄__ ▂___ ____
+      ((>= snr 40) "****")
+      ((>= snr 25) "***_")
+      ((>= snr 15) "**__")
+      ((>= snr  5) "*___")
+      (t           "____"))))
+
+(defun wpa-cli (&rest arguments)
+  (mapcar #'parse-environment-line (run/lines (list* "sudo" "wpa_cli" arguments))))
+
+(defun parse-environment-line (line)
+  (let ((p (position #\= line)))
+    (if p
+        (cons (subseq line 0 p)
+              (subseq line (1+ p) (length line)))
+        (cons t line))))
 
 (defun get-wireless-secrets ()
   (or *wireless-secrets* (error "WIRELESS_SECRETS variable not defined")))
@@ -62,15 +85,29 @@
 
 (exporting-definitions
 
+(defun wireless-devices ()
+  (loop :for p :in (directory "/sys/class/net/*/wireless")
+        :collect (cadr (reverse (pathname-directory p)))))
+
+(defun wireless-device-status (device)
+  (labels ((get-string (env name)
+             (cdr (assoc name env :test 'equal)))
+           (get-integer (env name)
+             (ignore-errors (parse-integer (get-string env name)))))
+    (let* ((status (wpa-cli "-i" device "status"))
+           (ssid (get-string status "ssid"))
+           (bssid (get-string status "bssid"))
+;           (_ (DBG :foo status ssid bssid))
+           (bss (wpa-cli "bss" bssid))
+           (level (get-integer bss "level"))
+           (noise (get-integer bss "noise")))
+      (list device ssid (bars-string level noise)))))
+
 (defun wireless-connection-status (&optional (s t))
   "Wireless connection status"
-  (loop :for (name uuid type device) :in (ignore-errors (get-network-connections))
-        :when (equal type "wifi")
-          :do (loop :for (in-use bssid ssid mode chan rate signal bars security)
-                      :in (nmcli-list device)
-                    :when in-use
-                      :do (format s "~A connected to ~A ~A~%" device ssid bars)))
-  (values))
+  (loop :for (device ssid bars) :in (mapcar #'wireless-device-status (wireless-devices))
+        :when ssid
+          :do (format s "~A connected to ~A ~A~%" device ssid bars)))
 
 ;; (list-of (list name uuid type device)) <-
 (defun get-network-connections ()
